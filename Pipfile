@@ -14,6 +14,7 @@ markdown = "*"
 django-filter = "*"
 django = "*"
 celery = "*"
+requests = "*"
 
 [requires]
 python_version = "3.7"

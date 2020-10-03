@@ -1,14 +1,10 @@
-import random
-
 from celery import shared_task
-from django.db.models import F
 
-from .models import *
+from . import github_api
 
 
-# @celery_app.task(bind=True)
 @shared_task
-def test_task():
-    n = random.randint(0, 10)
-    print(f'haha {n}')
-    return n
+def get_user(user_name):
+    result = github_api.get_user(user_name)
+    print(result)
+    return result

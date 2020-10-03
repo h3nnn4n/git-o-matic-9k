@@ -144,3 +144,8 @@ broker_connection_max_retries = None
 task_serializer = 'json'
 accept_content = ['json', 'msgpack']
 beat_scheduler = 'djcelery.schedulers.DatabaseScheduler'
+
+
+# Env settings
+GITHUB_API_USER = os.environ.get('GITHUB_API_USER')
+GITHUB_API_KEY = os.environ.get('GITHUB_API_KEY')
