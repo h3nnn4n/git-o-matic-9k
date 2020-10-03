@@ -144,15 +144,15 @@ REST_FRAMEWORK = {
 # Celery settings
 
 # pylint: disable=invalid-name
-broker_url = os.environ.get('CLOUDAMQP_URL')
-broker_pool_limit = 1
-broker_connection_max_retries = None
+BROKER_URL = os.environ.get('CLOUDAMQP_URL')
+BROKER_POOL_LIMIT = 1
+BROKER_CONNECTION_MAX_RETRIES = None
 
-task_serializer = 'json'
-accept_content = ['json', 'msgpack']
-beat_scheduler = 'djcelery.schedulers.DatabaseScheduler'
+TASK_SERIALIZER = 'json'
+ACCEPT_CONTENT = ['json', 'msgpack']
+BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
 
-celery_always_eager = False
+CELERY_ALWAYS_EAGER = False
 
 
 # Env settings
