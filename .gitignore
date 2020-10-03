@@ -2,10 +2,11 @@ __pycache__
 
 *.dump
 
+static_collected
 staticfiles
-web/static/
+git_o_matic_9k/static
 
 yarn-error.log
-node_modules/
+node_modules
 
 *.db
