@@ -21,11 +21,34 @@ def add_or_update_user(user_name):
 def add_or_update_repository(repo_name):
     result = github_api.get_repository(repo_name)
 
+    fields = [
+        'name',
+        'full_name',
+        'description',
+        'homepage',
+        'language',
+        'created_at',
+        'updated_at',
+
+        'has_downloads',
+        'has_issues',
+        'has_pages',
+        'has_projects',
+        'has_wiki',
+        'private',
+        'archived',
+        'disabled',
+
+        'stargazers_count',
+        'subscribers_count',
+        'watchers_count',
+        'open_issues_count',
+    ]
+
+    defaults = { field: result[field] for field in fields }
+    defaults['data_source'] = result
+
     Repository.objects.update_or_create(
         github_id=result['id'],
-        defaults={
-            'name': result['name'],
-            'description': result['description'],
-            'data_source': result,
-        }
+        defaults=defaults
     )
