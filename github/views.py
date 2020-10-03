@@ -16,9 +16,9 @@ class DeveloperViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
     filterset_fields = {
         'login': ['exact', 'lte', 'gte'],
-        'name': ['exact', 'lte', 'gte', 'isnull'],
+        'name': ['exact', 'lte', 'gte', 'isnull', 'contains'],
         'location': ['exact', 'lte', 'gte', 'isnull'],
-        'bio': ['exact', 'lte', 'gte', 'isnull'],
+        'bio': ['exact', 'lte', 'gte', 'isnull', 'contains'],
         'company': ['exact', 'lte', 'gte', 'isnull'],
         'email': ['exact', 'lte', 'gte', 'isnull'],
         'followers': ['exact', 'lte', 'gte'],
@@ -41,7 +41,7 @@ class RepositoryViewSet(viewsets.ReadOnlyModelViewSet):
         'owner_github_id': ['exact'],
         'name': ['exact'],
         'full_name': ['exact'],
-        'description': ['exact', 'isnull'],
+        'description': ['exact', 'isnull', 'contains'],
         'homepage': ['exact', 'isnull'],
         'language': ['exact', 'isnull'],
         'created_at': ['exact', 'lte', 'gte'],
