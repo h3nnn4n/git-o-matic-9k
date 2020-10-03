@@ -5,7 +5,6 @@ from rest_framework.test import APIClient
 
 import vcr
 
-from github.models import Developer, Repository
 from github.tasks import add_or_update_repository
 
 
