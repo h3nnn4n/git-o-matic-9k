@@ -11,7 +11,21 @@ class Developer(models.Model):
     github_id = models.CharField(max_length=256)
     # It appears that github limits the length to 39, but lets keep it long
     # enough to be future proof
-    user_name = models.CharField(max_length=256)
+    login = models.CharField(max_length=256)
+    name = models.TextField()
+    location = models.TextField(null=True)
+    bio = models.TextField(null=True)
+    company = models.TextField(null=True)
+    email = models.TextField(null=True)
+
+    created_at = models.DateTimeField()
+    updated_at = models.DateTimeField()
+
+    followers = models.IntegerField(default=0)
+    following = models.IntegerField(default=0)
+    public_gists = models.IntegerField(default=0)
+    public_repos = models.IntegerField(default=0)
+
     data_source = JSONField()
 
 

@@ -65,8 +65,8 @@ class AddOrUpdateUserTaskTest(TestCase):
             tasks.add_or_update_user('h3nnn4n')
 
         # Lets pretent that the username changed
-        dev = Developer.objects.get(user_name='h3nnn4n')
-        dev.user_name = 'renan'
+        dev = Developer.objects.get(login='h3nnn4n')
+        dev.login = 'renan'
         dev.save()
 
         # Actual test
@@ -77,5 +77,5 @@ class AddOrUpdateUserTaskTest(TestCase):
 
         self.assertEqual(developer_count_before, Developer.objects.count())
 
-        dev = Developer.objects.get(user_name='h3nnn4n')
-        self.assertEqual(dev.user_name, 'h3nnn4n')
+        dev = Developer.objects.get(login='h3nnn4n')
+        self.assertEqual(dev.login, 'h3nnn4n')

@@ -8,12 +8,29 @@ from . import github_api
 def add_or_update_user(user_name):
     result = github_api.get_user(user_name)
 
+    fields = [
+        'login',
+        'name',
+        'location',
+        'bio',
+        'company',
+        'email',
+
+        'created_at',
+        'updated_at',
+
+        'followers',
+        'following',
+        'public_gists',
+        'public_repos',
+    ]
+
+    defaults = { field: result[field] for field in fields }
+    defaults['data_source'] = result
+
     Developer.objects.update_or_create(
         github_id=result['id'],
-        defaults={
-            'user_name': result['login'],
-            'data_source': result,
-        }
+        defaults=defaults
     )
 
 
