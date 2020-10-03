@@ -10,6 +10,8 @@ def add_or_update_user(user_name):
 
     Developer.objects.update_or_create(
         github_id=result['id'],
-        user_name=result['login'],
-        data_source=result,
+        defaults={
+            'user_name': result['login'],
+            'data_source': result,
+        }
     )
