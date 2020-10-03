@@ -1,0 +1,11 @@
+__pycache__
+
+*.dump
+
+staticfiles
+web/static/
+
+yarn-error.log
+node_modules/
+
+*.db
