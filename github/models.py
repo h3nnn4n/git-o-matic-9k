@@ -1,6 +1,7 @@
 import uuid
 from django.db import models
 from django.db.models import JSONField
+from django.conf import settings
 
 
 class Developer(models.Model):
@@ -60,3 +61,16 @@ class Repository(models.Model):
     open_issues_count = models.IntegerField()
 
     data_source = JSONField()
+
+
+class RateLimit(models.Model):
+    """
+    Represents the rate limit data from github. Used for throtting
+    """
+    rate_limit = models.IntegerField()
+    rate_remaining = models.IntegerField()
+    rate_reset_raw = models.IntegerField()
+    rate_reset = models.DateTimeField()
+
+    def can_make_new_requests(self):
+        return self.rate_remaining > settings.RATE_LIMIT_STOP_THRESHOLD

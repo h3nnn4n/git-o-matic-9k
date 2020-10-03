@@ -165,3 +165,8 @@ GITHUB_API_KEY = os.environ.get('GITHUB_API_KEY')
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
+
+
+# Github api settings
+# stop making new requests if there are less than 100 availiable
+RATE_LIMIT_STOP_THRESHOLD = 25
