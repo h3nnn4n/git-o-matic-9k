@@ -25,8 +25,18 @@ class GetOrUpdateAllUserRepositories(TestCase):
 
         self.assertEqual(repository_count_before + 161, Repository.objects.count())
 
+        repo = Repository.objects.get(name='garapa')
+        self.assertEqual(repo.owner_github_id, '')
+        self.assertEqual(repo.language, 'C')
+        self.assertEqual(repo.full_name, 'h3nnn4n/garapa')
+
 
 class AddOrUpdateRepositoryTaskTest(TestCase):
+    def test_create_repository(self):
+        with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
+            tasks.add_or_update_repository('h3nnn4n/garapa')
+
+
     def test_create_user_for_repository_if_not_found(self):
         """
         Test that if a repository is created without an owner in the database
@@ -80,6 +90,16 @@ class AddOrUpdateRepositoryTaskTest(TestCase):
 
 
 class AddOrUpdateUserTaskTest(TestCase):
+    def test_create_user(self):
+        with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
+            tasks.add_or_update_user('h3nnn4n')
+
+        developer = Developer.objects.get(login='h3nnn4n')
+
+        self.assertEqual(developer.location, 'Brazil')
+        self.assertEqual(developer.name, 'Renan S Silva')
+
+
     def test_create_user_found_for_the_first_time(self):
         developer_count_before = Developer.objects.count()
 
