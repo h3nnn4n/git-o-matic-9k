@@ -1,7 +1,8 @@
 from datetime import datetime
 
-import requests
 import links_from_header
+import pytz
+import requests
 
 from django.conf import settings
 
@@ -31,6 +32,7 @@ def rate_limit_update(headers):
     remaining = headers['X-RateLimit-Remaining']
     reset = int(headers['X-RateLimit-Reset'])
     reset_datetime = datetime.utcfromtimestamp(reset)
+    reset_datetime = pytz.utc.localize(reset_datetime)
 
     obj, created = RateLimit.objects.update_or_create(
         id=1,
