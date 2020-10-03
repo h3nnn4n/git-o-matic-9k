@@ -5,5 +5,6 @@ from django.shortcuts import redirect
 urlpatterns = [
     path('', lambda _: redirect('github/')),
     path('github/', include('github.urls')),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('health/', include('health.urls')),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
