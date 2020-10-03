@@ -1,0 +1,2 @@
+web: pipenv run python manage.py runserver
+main_worker: celery -A git_o_matic_9k worker --beat --loglevel INFO
