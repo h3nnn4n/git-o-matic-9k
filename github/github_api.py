@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from random import randint
 
 import links_from_header
 import pytz
@@ -28,8 +29,8 @@ def get_auth():
 
 
 def rate_limit_update(headers):
-    limit = headers['X-RateLimit-Limit']
-    remaining = headers['X-RateLimit-Remaining']
+    limit = int(headers['X-RateLimit-Limit'])
+    remaining = int(headers['X-RateLimit-Remaining'])
     reset = int(headers['X-RateLimit-Reset'])
     reset_datetime = datetime.utcfromtimestamp(reset)
     reset_datetime = pytz.utc.localize(reset_datetime)
@@ -52,6 +53,19 @@ def rate_limit_update(headers):
         obj.rate_reset = reset_datetime
         obj.rate_limit = limit
         obj.rate_remaining = remaining
+
+
+def next_request_time():
+    ratelimit = RateLimit.objects.get(pk=1)
+    return ratelimit.rate_reset + timedelta(seconds=randint(1, 60))
+
+
+def can_make_new_requests():
+    try:
+        ratelimit = RateLimit.objects.get(pk=1)
+        return ratelimit.can_make_new_requests()
+    except RateLimit.DoesNotExist:
+        return True
 
 
 def get_user(user_name):
