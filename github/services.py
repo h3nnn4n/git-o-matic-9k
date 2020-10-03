@@ -54,6 +54,7 @@ def add_or_update_repository(data):
     ]
 
     defaults = { field: data[field] for field in fields }
+    defaults['owner_github_id'] = data['owner']['id']
     defaults['data_source'] = data
     defaults['owner'] = Developer.objects.get(github_id=data['owner']['id'])
 
