@@ -7,6 +7,7 @@ verify_ssl = true
 pipenv = "*"
 pylint = "*"
 ipdb = "*" # HACK: https://github.com/pypa/pipenv/issues/4476
+vcrpy = "*"
 
 [packages]
 djangorestframework = "*"

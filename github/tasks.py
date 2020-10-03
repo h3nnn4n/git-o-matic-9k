@@ -1,10 +1,15 @@
 from celery import shared_task
 
+from .models import Developer
 from . import github_api
 
 
 @shared_task
-def get_user(user_name):
+def add_or_update_user(user_name):
     result = github_api.get_user(user_name)
-    print(result)
-    return result
+
+    Developer.objects.update_or_create(
+        github_id=result['id'],
+        user_name=result['login'],
+        data_source=result,
+    )

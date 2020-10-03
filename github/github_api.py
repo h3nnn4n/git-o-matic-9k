@@ -20,7 +20,7 @@ def get_user(user_name):
         auth=auth
     )
 
-    return result.json
+    return result.json()
 
 
 def get_repository(repo_name):
@@ -31,7 +31,7 @@ def get_repository(repo_name):
         auth=auth
     )
 
-    return result.json
+    return result.json()
 
 
 def list_repositories(user_name):
@@ -42,4 +42,4 @@ def list_repositories(user_name):
         auth=auth
     )
 
-    return result.json
+    return result.json()
