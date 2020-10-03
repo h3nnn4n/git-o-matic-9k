@@ -39,7 +39,7 @@ class Repository(models.Model):
     full_name = models.CharField(max_length=256)
     description = models.TextField(null=True)
     homepage = models.TextField(null=True)
-    language = models.TextField()
+    language = models.TextField(null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
