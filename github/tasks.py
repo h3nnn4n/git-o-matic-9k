@@ -65,6 +65,14 @@ def add_or_update_repository(repo_name):
     defaults = { field: result[field] for field in fields }
     defaults['data_source'] = result
 
+    try:
+        defaults['owner'] = Developer.objects.get(github_id=result['owner']['id'])
+    except Developer.DoesNotExist:
+        # If the user doesnt exist yet, create it
+        user_name = repo_name.split('/')[0]
+        add_or_update_user.run(user_name)
+        defaults['owner'] = Developer.objects.get(github_id=result['owner']['id'])
+
     Repository.objects.update_or_create(
         github_id=result['id'],
         defaults=defaults

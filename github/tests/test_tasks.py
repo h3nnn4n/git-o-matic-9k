@@ -13,10 +13,26 @@ test_vcr = vcr.VCR(
 
 
 class AddOrUpdateRepositoryTaskTest(TestCase):
+    def test_create_user_for_repository_if_not_found(self):
+        """
+        Test that if a repository is created without an owner in the database
+        it is autmatically created too
+        """
+        developer_count_before = Developer.objects.count()
+
+        with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
+            tasks.add_or_update_repository('h3nnn4n/garapa')
+
+        self.assertEqual(developer_count_before + 1, Developer.objects.count())
+
+        dev = Developer.objects.get(login='h3nnn4n')
+        self.assertEqual(dev.login, 'h3nnn4n')
+
+
     def test_create_repository_found_for_the_first_time(self):
         repository_count_before = Repository.objects.count()
 
-        with test_vcr.use_cassette('get_repo_h3nnn4n_garapa.yaml', record='none'):
+        with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
             tasks.add_or_update_repository('h3nnn4n/garapa')
 
         self.assertEqual(repository_count_before + 1, Repository.objects.count())
@@ -27,7 +43,7 @@ class AddOrUpdateRepositoryTaskTest(TestCase):
 
     def test_update_existing_repository(self):
         # Setup
-        with test_vcr.use_cassette('get_repo_h3nnn4n_garapa.yaml', record='none'):
+        with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
             tasks.add_or_update_repository('h3nnn4n/garapa')
 
         # Lets pretent that the description changed
