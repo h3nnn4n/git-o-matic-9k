@@ -1,0 +1,97 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.24.0
+    method: GET
+    uri: https://api.github.com/repos/h3nnn4n/garapa
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA51Y227bOBD9FUGva0e24rhbA0E3aIqiBepsW3e3mxeDlmiJCUUKJGWvLeTfd3jR
+        xV43ifkSSwzP0eFwZjjDOiRpOHsznY6uJvF0EDKe4qUeCr/cftje0c80+fh2j35+2yTs8XL+8M92
+        vvi6m2fX1yFMRgWGmRkSqETwvq4oXbrB/JIxNmFR+89SkA1SMH+NqMSDkG8ZFuGsDinPCAMahwAe
+        I+lqcnk5uTpU9HX61885TR6S8fz2y35++0OrQECLxLISVJMoVcpZFNlBObrIiMqrVSWxSDhTmKmL
+        hBdRFTn+d5vrCXBkwrGYpcPAEVtJHJFFA5uMOr25KujR9+1nzexu3ppTyreAPRb7DH3UgrSBDQFh
+        2fkEAKojrnIMlgL5T3rRRKqzpBhAHekf8BFNIcHyAqfnyHEQEKMd4KmOBC654apWMhGkVISzs2Qd
+        AIGIiwwxskdnEwFQAl4LOkuAAQAQb8C/zkJaRB2Z4Eh22gwCJ5hswKbnsx1BgUztSh2hP2DHtYWJ
+        wkuUFjrcTBQ+DSBgXuG7XRSnuN0j4L0JMkgBK74LcFFRpLgYBFtBFMRZQFjwPthC9AWIBdzsKqKB
+        wkoQGdx8gtE0+FxRgoKbPz+BuDUXj21yeDb8jLmbsOqkaYIXjH8KCQEGOBDwiHc+cA2rI/jrQiKB
+        GEUrLrQ1fPgO8HXUf9XuoTAqfGgNDvA5515WMjjAEykr/CrfPGlsA5dR4/esKlY2Gb3G208yWiAo
+        Q1KSjGHsY50WW0dNdlwJxJLci62B1pF9MvuGMh9hGgboFeUrHzgcQ5HB1pHMkU36aumpRZNp6AGX
+        wGtfYRracinht3NGlMa2THDAKNhEH1UNNKqdtShiWYUyL7IWC/unD70M7V88+k96eAcGJl3FCLKq
+        vLNLB9e67JkLMehlrg7dcZlM/3xBcHqVvePfrLMoyEuH6UkihzzwUn827V/HjPr95ZP+l+I0tI66
+        1GdTqiP1sJzLqY2qPrWreX02t4FG9W8lUrnOHfCFEgnsIdEho3qFoOq4uLioc4xMBVlg4RdeFggM
+        SCQ5FEwequoGCiVAgZSpRddaVAq1KeUo9bFbiwUeuzMeyiywv5Ml9FY+cgyuT1QQiqXizCundeA+
+        JeOKrEnymoL7ZFAc4Ot3krAEDxClA/A2RRIC/gfti94YqKywlxksEERDvWqrbIrBFX0sKrCF1pHt
+        gVJcUr7zTQg9tI4wgaFHTpdIQXUdj8bT4Tgejq8W8eXsKp6NxvcwpyrTgzlvh6PJMB4v4ng2Gc8m
+        b/ScspJ5RxOPhqPpMI41zWTipkBic44JT9Ax/79jdaW17nyBUsq8m/9HN3t22Om72QkFDzty/Be/
+        sDk+N36JAD05L3AJR7Pt1yXZw1M8+n0EVwa90zbhFQNbjuNBuEUK6jk46HpjzRkNJO81J5JLG3rh
+        TIkKbin0SCn4A06U7I91Ud6buCWP5ACoK4e2p7H9SfNxyHxECO7uLRhEaZvJ4ArC3ZGkRKIVxd0A
+        LzFzCptljCAqSIKZhPXXuomBtZg+H9bj7mLu3Kss03/t5c787ub79w/fFp/u5tqj9NWJldC//0mm
+        i4/04f7vq/394uY6hGbRtkqzMfTYnZBwBhIa41pTp3iNKqqWtvwFQQWSyihSuCiX1jkUf8TQiLrv
+        YrWFPqzdm8PSxBlt8vQfJu1kxq8SAAA=
+    headers:
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '1277'
+      X-GitHub-Request-Id:
+      - C157:5F86:16F9E8D:25A89CE:5F7864E9
+      X-Ratelimit-Limit:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '50'
+      X-Ratelimit-Reset:
+      - '1601725892'
+      X-Ratelimit-Used:
+      - '10'
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+        X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset
+      cache-control:
+      - public, max-age=60, s-maxage=60
+      content-encoding:
+      - gzip
+      content-security-policy:
+      - default-src 'none'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Oct 2020 11:47:54 GMT
+      etag:
+      - W/"4455a0c4a056ae32e42c2c2bd664ff4bf091521e4d6271950bb3ec89fbfbd70b"
+      last-modified:
+      - Sun, 21 Apr 2019 22:41:47 GMT
+      referrer-policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      server:
+      - GitHub.com
+      status:
+      - 200 OK
+      strict-transport-security:
+      - max-age=31536000; includeSubdomains; preload
+      vary:
+      - Accept, Accept-Encoding, Accept, X-Requested-With
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-github-media-type:
+      - github.v3; format=json
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1
