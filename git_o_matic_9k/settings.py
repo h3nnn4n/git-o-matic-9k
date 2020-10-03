@@ -144,8 +144,7 @@ REST_FRAMEWORK = {
 # Celery settings
 
 # pylint: disable=invalid-name
-celery_broker_url = os.environ.get('CLOUDAMQP_URL')
-broker_url = os.environ.get('CLOUDAMQP_URL')
+CELERY_BROKER_URL = os.environ.get('CLOUDAMQP_URL')
 celery_broker_pool_limit = 1
 celery_broker_connection_max_retries = None
 
