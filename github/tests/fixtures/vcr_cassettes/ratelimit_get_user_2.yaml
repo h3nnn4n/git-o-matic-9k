@@ -1,0 +1,83 @@
+interactions:
+- request:
+    body: null
+    headers:
+      Accept:
+      - '*/*'
+      Accept-Encoding:
+      - gzip, deflate
+      Connection:
+      - keep-alive
+      User-Agent:
+      - python-requests/2.24.0
+    method: GET
+    uri: https://api.github.com/users/h3nnn4n
+  response:
+    body:
+      string: !!binary |
+        H4sIAAAAAAAAA5VTTYvbMBT8K0bnJP6IkoJgKZScCpvSZreUvQRZ1joqimRk2SEJ+987srzdNIeC
+        T7afZ+aNnt5ciba1MoSRw9IYQw2ZEVUR9mlFl0u6mhFjK7kPFfK4+b7++WurxW+RbzePl+3m+QFo
+        3nPP3b5zOoh437QsTWOxzRa18oeu7FrphDVeGr8Q9ph26aj/uX+g0KjdqDI0QuFOrVGjUGRDrU0/
+        /B78Ud/1j20H9Afu1WptT+Dem/2PfPqXBFfxXZl6ugBI19T6g8SkYP8tHFq1fpKVgXBNwwM3EiRa
+        TN7JaoqdkQIzJwMf19TJxg5aXdkKpxqvrJlk6x8ihKyruVEXPlkIxBb8YGiSgYEAouyxX5OYkXFN
+        G6d6Ls5hDE4KqXrMdLraHRVi/txILPQzbjxMWHm559UxxO2V61YiXfwYAD+k4SbZJTulew4k9rbh
+        5ow/X225E9ZJFEsk9SZi416/B0NZQLQVw9gB++L4RekwlSPHk5lO6xk5KCd5qdEzfpegMfLNyCRa
+        8DYRCHyifMK1XiThDCfl/bi20W6kNl2pldjH4bN8TWdkLA17SlB6TwwiR9i6uAkQYYALePGYNPfw
+        UGQ5nWereZ495StGV6ygL+jeNdUtpsgAmGfFU7FklDK6fCFvfwDCNfHcwwQAAA==
+    headers:
+      Accept-Ranges:
+      - bytes
+      Content-Length:
+      - '502'
+      X-GitHub-Request-Id:
+      - E77C:24A0:14660A:3AAE95:5F790070
+      X-Ratelimit-Limit:
+      - '60'
+      X-Ratelimit-Remaining:
+      - '58'
+      X-Ratelimit-Reset:
+      - '1601768959'
+      X-Ratelimit-Used:
+      - '2'
+      access-control-allow-origin:
+      - '*'
+      access-control-expose-headers:
+      - ETag, Link, Location, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining,
+        X-RateLimit-Used, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes,
+        X-Poll-Interval, X-GitHub-Media-Type, Deprecation, Sunset
+      cache-control:
+      - public, max-age=60, s-maxage=60
+      content-encoding:
+      - gzip
+      content-security-policy:
+      - default-src 'none'
+      content-type:
+      - application/json; charset=utf-8
+      date:
+      - Sat, 03 Oct 2020 22:51:28 GMT
+      etag:
+      - W/"e86cea31edf9664737e4189940d91f0c76f1a4339dfb1d25b6f1e3b8d5f5c8cd"
+      last-modified:
+      - Fri, 02 Oct 2020 23:44:43 GMT
+      referrer-policy:
+      - origin-when-cross-origin, strict-origin-when-cross-origin
+      server:
+      - GitHub.com
+      status:
+      - 200 OK
+      strict-transport-security:
+      - max-age=31536000; includeSubdomains; preload
+      vary:
+      - Accept, Accept-Encoding, Accept, X-Requested-With
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      x-github-media-type:
+      - github.v3; format=json
+      x-xss-protection:
+      - 1; mode=block
+    status:
+      code: 200
+      message: OK
+version: 1

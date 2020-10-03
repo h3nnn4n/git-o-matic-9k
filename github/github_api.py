@@ -1,7 +1,11 @@
+from datetime import datetime
+
 import requests
 import links_from_header
 
 from django.conf import settings
+
+from .models import RateLimit
 
 
 class HttpErrorExeption(RuntimeError):
@@ -22,6 +26,32 @@ def get_auth():
     return None
 
 
+def rate_limit_update(headers):
+    limit = headers['X-RateLimit-Limit']
+    remaining = headers['X-RateLimit-Remaining']
+    reset = int(headers['X-RateLimit-Reset'])
+    reset_datetime = datetime.utcfromtimestamp(reset)
+
+    obj, created = RateLimit.objects.update_or_create(
+        id=1,
+        defaults={
+            'rate_limit': limit,
+            'rate_remaining': remaining,
+            'rate_reset': reset_datetime,
+            'rate_reset_raw': reset,
+        }
+    )
+
+    if created:
+        return
+
+    if reset > obj.rate_reset_raw or obj.rate_remaining > remaining:
+        obj.rate_reset_raw = reset
+        obj.rate_reset = reset_datetime
+        obj.rate_limit = limit
+        obj.rate_remaining = remaining
+
+
 def get_user(user_name):
     auth = get_auth()
 
@@ -30,6 +60,7 @@ def get_user(user_name):
         auth=auth
     )
 
+    rate_limit_update(result.headers)
     check_for_errors(result)
 
     return result.json()

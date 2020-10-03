@@ -60,3 +60,13 @@ class Repository(models.Model):
     open_issues_count = models.IntegerField()
 
     data_source = JSONField()
+
+
+class RateLimit(models.Model):
+    """
+    Represents the rate limit data from github. Used for throtting
+    """
+    rate_limit = models.IntegerField()
+    rate_remaining = models.IntegerField()
+    rate_reset_raw = models.IntegerField()
+    rate_reset = models.DateTimeField()
