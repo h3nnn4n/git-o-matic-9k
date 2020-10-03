@@ -54,6 +54,10 @@ class RepositoryViewSetTest(TestCase):
         response = self.api_client.get(reverse('repository-list'), {'language': 'C'})
         self.assertEqual(len(response.json()['results']), 2)
 
+    def test_filter_description_contains_garapa(self):
+        response = self.api_client.get(reverse('repository-list'), {'description__contains': 'tetris'})
+        self.assertEqual(len(response.json()['results']), 1)
+
     def test_filter_language_is_rust(self):
         response = self.api_client.get(reverse('repository-list'), {'language': 'Rust'})
         self.assertEqual(len(response.json()['results']), 4)
