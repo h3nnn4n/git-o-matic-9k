@@ -17,6 +17,7 @@ django = "*"
 celery = "*"
 requests = "*"
 psycopg2 = "*"
+links-from-link-header = "*"
 
 [requires]
 python_version = "3.7"

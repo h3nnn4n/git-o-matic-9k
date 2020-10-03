@@ -1,4 +1,5 @@
-from django.test import TestCase
+import unittest
+from django.test import TestCase, override_settings
 
 import vcr
 
@@ -10,6 +11,19 @@ test_vcr = vcr.VCR(
     serializer='yaml',
     cassette_library_dir='github/tests/fixtures/vcr_cassettes/'
 )
+
+
+class GetOrUpdateAllUserRepositories(TestCase):
+    @unittest.skip('Celery config isnt being properly overriden, so the test doesnt work')
+    @override_settings(celery_always_eager=True)
+    def test_create_all_user_repositories(self):
+        repository_count_before = Repository.objects.count()
+
+        with unittest.mock.patch('celery.celery_always_eager', True, create=True):
+            with test_vcr.use_cassette('get_all_repos_from_h3nnn4n.yaml', record='new_episodes'):
+                tasks.add_or_update_all_user_repositories('h3nnn4n')
+
+        self.assertEqual(repository_count_before + 161, Repository.objects.count())
 
 
 class AddOrUpdateRepositoryTaskTest(TestCase):

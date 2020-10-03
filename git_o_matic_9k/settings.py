@@ -148,6 +148,8 @@ task_serializer = 'json'
 accept_content = ['json', 'msgpack']
 beat_scheduler = 'djcelery.schedulers.DatabaseScheduler'
 
+celery_always_eager = False
+
 
 # Env settings
 GITHUB_API_USER = os.environ.get('GITHUB_API_USER')
