@@ -19,7 +19,7 @@ jobs:
           source_branch: "master"
           destination_branch: "production"
           pr_title: "Production Deploy"
-          pr_body: "Automated Production Deploy Pull Request. Opened with Github Actions."
+          pr_body: "Automated Production Deploy Pull Request. Opened with Github Actions. Merge this to make a deploy."
           pr_label: "Production Deploy"
           pr_allow_empty: true
           github_token: ${{ secrets.GITHUB_TOKEN }}
