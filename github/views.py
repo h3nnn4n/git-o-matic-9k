@@ -7,7 +7,7 @@ from .serializers import DeveloperSerializer, RepositorySerializer
 from .tasks import add_or_update_user, add_or_update_all_user_repositories, add_or_update_repository
 
 
-class DeveloperViewSet(viewsets.ModelViewSet):
+class DeveloperViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for developers
     """
@@ -16,7 +16,7 @@ class DeveloperViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
-class RepositoryViewSet(viewsets.ModelViewSet):
+class RepositoryViewSet(viewsets.ReadOnlyModelViewSet):
     """
     API endpoint for repositories
     """
