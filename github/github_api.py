@@ -76,6 +76,7 @@ def get_repository(repo_name):
         auth=auth
     )
 
+    rate_limit_update(result.headers)
     check_for_errors(result)
 
     return result.json()
@@ -89,6 +90,7 @@ def list_repositories(user_name, page_link=None):
         auth=auth
     )
 
+    rate_limit_update(result.headers)
     check_for_errors(result)
 
     if 'link' in result.headers.keys():
