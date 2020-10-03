@@ -58,6 +58,9 @@ def list_repositories(user_name, page_link=None):
 
     check_for_errors(result)
 
-    links = links_from_header.extract(result.headers['link'])
+    if 'link' in result.headers.keys():
+        links = links_from_header.extract(result.headers['link'])
+    else:
+        links = {}
 
     return result.json(), links

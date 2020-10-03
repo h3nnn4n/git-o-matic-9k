@@ -12,7 +12,7 @@ class Developer(models.Model):
     # It appears that github limits the length to 39, but lets keep it long
     # enough to be future proof
     login = models.CharField(max_length=256)
-    name = models.TextField()
+    name = models.TextField(null=True)
     location = models.TextField(null=True)
     bio = models.TextField(null=True)
     company = models.TextField(null=True)
