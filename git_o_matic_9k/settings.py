@@ -150,7 +150,7 @@ celery_broker_connection_max_retries = None
 
 celery_task_serializer = 'json'
 celery_accept_content = ['json', 'msgpack']
-# CELERY_BEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+celery_beat_scheduler = 'django_celery_beat.schedulers:DatabaseScheduler'
 
 celery_celery_always_eager = False
 
