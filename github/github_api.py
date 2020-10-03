@@ -3,15 +3,43 @@ import requests
 from django.conf import settings
 
 
-def get_user(user_name):
+def get_auth():
     auth = (settings.GITHUB_API_USER, settings.GITHUB_API_KEY)
 
-    if auth[0] is not None:
-        return requests.get(
-            f'https://api.github.com/users/{user_name}',
-            auth=auth
-        )
+    if all(auth):
+        return auth
 
-    return requests.get(
+    return None
+
+
+def get_user(user_name):
+    auth = get_auth()
+
+    result = requests.get(
         f'https://api.github.com/users/{user_name}',
+        auth=auth
     )
+
+    return result.json
+
+
+def get_repository(repo_name):
+    auth = get_auth()
+
+    result = requests.get(
+        f'https://api.github.com/repos/{repo_name}',
+        auth=auth
+    )
+
+    return result.json
+
+
+def list_repositories(user_name):
+    auth = get_auth()
+
+    result = requests.get(
+        f'https://api.github.com/users/{user_name}/repos',
+        auth=auth
+    )
+
+    return result.json
