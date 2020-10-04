@@ -22,8 +22,10 @@ class Developer(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
-    followers = models.IntegerField(default=0)
-    following = models.IntegerField(default=0)
+    followers = models.ManyToManyField('Developer')
+
+    followers_count = models.IntegerField(default=0)
+    following_count = models.IntegerField(default=0)
     public_gists = models.IntegerField(default=0)
     public_repos = models.IntegerField(default=0)
 

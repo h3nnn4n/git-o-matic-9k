@@ -13,19 +13,21 @@ def add_or_update_user(data):
         'created_at',
         'updated_at',
 
-        'followers',
-        'following',
         'public_gists',
         'public_repos',
     ]
 
     defaults = { field: data[field] for field in fields }
+    defaults['followers_count'] = data['followers']
+    defaults['following_count'] = data['following']
     defaults['data_source'] = data
 
-    Developer.objects.update_or_create(
+    developer, _ = Developer.objects.update_or_create(
         github_id=data['id'],
         defaults=defaults
     )
+
+    return developer
 
 
 def add_or_update_repository(data):

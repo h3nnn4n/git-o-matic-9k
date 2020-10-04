@@ -59,3 +59,26 @@ def add_or_update_all_user_repositories(user_name, next_page_link=None):
 
     if 'next' in links.keys():
         add_or_update_all_user_repositories(user_name, links['next'])
+
+
+@shared_task
+def add_or_update_user_followers(user_name, next_page_link=None):
+    if not github_api.can_make_new_requests():
+        add_or_update_user_followers.apply_async(
+            args=[user_name, next_page_link],
+            eta=github_api.next_request_time(),
+        )
+
+        return
+
+    followers_data, links = github_api.get_user_followers(user_name, page_link=next_page_link)
+
+    developer = Developer.objects.get(login=user_name)
+
+    for follower_data in followers_data:
+        dev_data = github_api.get_user(follower_data['login'])
+        follower_developer = services.add_or_update_user(dev_data)
+        developer.followers.add(follower_developer)
+
+    if 'next' in links.keys():
+        add_or_update_user_followers.delay(user_name, links['next'])

@@ -129,3 +129,19 @@ class AddOrUpdateUserTaskTest(TestCase):
 
         dev = Developer.objects.get(login='h3nnn4n')
         self.assertEqual(dev.login, 'h3nnn4n')
+
+
+class AddOrUpdateUserFollowersTaskTest(TestCase):
+    def test_populate_followers(self):
+        with test_vcr.use_cassette('get_user_ruanpablom.yaml', record='none'):
+            tasks.add_or_update_user('ruanpablom')
+
+        with test_vcr.use_cassette('get_user_followers_ruanpablom.yaml', record='none'):
+            tasks.add_or_update_user_followers('ruanpablom')
+
+        developer = Developer.objects.get(login='ruanpablom')
+
+        self.assertEqual(developer.followers.count(), 10)
+        first_follower = developer.followers.order_by('login').first()
+
+        self.assertEqual(first_follower.login, 'GlauberrBatista')
