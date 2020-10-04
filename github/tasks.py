@@ -75,6 +75,9 @@ def add_or_update_user_followers(user_name, next_page_link=None):
 
     developer = Developer.objects.get(login=user_name)
 
+    if developer.followers_count == developer.followers.count() and next_page_link is None:
+        return
+
     for follower_data in followers_data:
         dev_data = github_api.get_user(follower_data['login'])
         follower_developer = services.add_or_update_user(dev_data)
