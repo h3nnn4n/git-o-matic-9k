@@ -27,6 +27,7 @@ class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
             'public_gists',
             'public_repos',
             'followers',
+            'following',
             'repositories',
         ]
 
