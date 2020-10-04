@@ -8,7 +8,7 @@ automated scraper grows the database by following network connections
 This project is powered by `django`, `djangorestframework` and `celery`.
 
 On only and fully functional version is available on
-[heroku](https://dashboard.heroku.com/apps/secret-gorge-30655).
+heroku [here](https://secret-gorge-30655.herokuapp.com/github/).
 The login and password are `test_user` and `b@t09pp#m`. Please not that the
 app is running on a free set of dynos and addons, and as such the performance
 may be low. Nevertheless, it is fully working.
