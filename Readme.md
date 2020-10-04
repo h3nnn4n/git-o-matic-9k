@@ -31,6 +31,13 @@ the same account without starving critical systems of requests.
 The system also supports working unauthenticated on the API. Which grately
 reduces the system throuput, but allows for a quicker setup and testing.
 
+Tasks are started if there are at least one remaining request in the quota.
+However, many tasks require several requests to work. If the request quota is
+exausted during a rask, then `HttpErrorExeption` will be raised with an `API
+rate limit exceeded` message. The rationale is that it is ok to postpone a
+task, but running a task half way through is not. As such, if a task runs out
+of request quota during its execution it is properly signicaled as an error.
+
 ## Local setup
 
 1) Set up [`pyenv`](https://github.com/pyenv/pyenv) and
