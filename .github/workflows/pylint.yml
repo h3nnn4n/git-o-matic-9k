@@ -27,4 +27,4 @@ jobs:
 
     - name: Analysing the code with pylint
       run: |
-        pipenv run pylint github git_o_matic_9k
+        pipenv run pylint github git_o_matic_9k health
