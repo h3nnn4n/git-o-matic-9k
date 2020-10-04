@@ -3,7 +3,7 @@ from celery import shared_task
 from . import services
 from . import github_api
 
-from .models import Developer
+from .models import Developer, Repository
 
 
 @shared_task
@@ -155,8 +155,41 @@ def add_or_update_user_starred_repositories(user_name, next_page_link=None):
         add_or_update_user(repo_data['owner']['login'])
         starred_repository = services.add_or_update_repository(repo_data)
         developer.starred_repositories.add(starred_repository)
-        # Add here this developer as a stargazer
-        # starred_repository.stargrazers.add(developer)
+        starred_repository.stargazers.add(developer)
 
     if 'next' in links.keys():
         add_or_update_user_starred_repositories.delay(user_name, links['next'])
+
+
+@shared_task
+def add_or_update_repository_stargazers(repo_name, next_page_link=None):
+    if not github_api.can_make_new_requests():
+        add_or_update_repository_stargazers.apply_async(
+            args=[repo_name, next_page_link],
+            eta=github_api.next_request_time(),
+        )
+
+        return
+
+    stargazers_data, links = github_api.get_repository_stargazers(repo_name, page_link=next_page_link)
+
+    try:
+        repository = Repository.objects.get(full_name=repo_name)
+    except Developer.DoesNotExist:
+        repo_data = github_api.get_repository(repo_name)
+        repository = services.add_or_update_repository(repo_data)
+
+    if repository.stargazers_count == repository.stargazers.count() and next_page_link is None:
+        return
+
+    assert repository is not None
+
+    for stargazer_data in stargazers_data:
+        user_data = github_api.get_user(stargazer_data['login'])
+        stargazer = services.add_or_update_user(user_data)
+
+        repository.stargazers.add(stargazer)
+        stargazer.starred_repositories.add(repository)
+
+    if 'next' in links.keys():
+        add_or_update_repository_stargazers.delay(repo_name, links['next'])

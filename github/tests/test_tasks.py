@@ -215,7 +215,7 @@ class AddOrUpdateUserStarredRepositoriesTest(TestCase):
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
 
-        with test_vcr.use_cassette('get_user_stared_repositories_h3nnn4n.yaml', record='new_episodes'):
+        with test_vcr.use_cassette('get_user_stared_repositories_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user_starred_repositories('h3nnn4n')
 
         developer = Developer.objects.get(login='h3nnn4n')
@@ -226,3 +226,22 @@ class AddOrUpdateUserStarredRepositoriesTest(TestCase):
         ]
 
         self.assertIn('danistefanovic/build-your-own-x', starred_repository_names)
+
+
+class AddOrUpdateRespositoryStargazersTest(TestCase):
+    def test_populate_stargazers(self):
+        with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
+            tasks.add_or_update_repository('h3nnn4n/garapa')
+
+        with test_vcr.use_cassette('get_repo_stargazers_h3nnn4n_garapa.yaml', record='none'):
+            tasks.add_or_update_repository_stargazers('h3nnn4n/garapa')
+
+        repository = Repository.objects.get(name='garapa')
+
+        self.assertEqual(repository.stargazers.count(), 12)
+
+        stargazer_names = [
+            stargazer.login for stargazer in repository.stargazers.all()
+        ]
+
+        self.assertIn('sombreroman55', stargazer_names)

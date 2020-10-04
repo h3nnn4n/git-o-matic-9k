@@ -60,6 +60,8 @@ class Repository(models.Model):
     archived = models.BooleanField()
     disabled = models.BooleanField()
 
+    stargazers = models.ManyToManyField('Developer', related_name='reverse_stargazers')
+
     stargazers_count = models.IntegerField()
     subscribers_count = models.IntegerField()
     watchers_count = models.IntegerField()

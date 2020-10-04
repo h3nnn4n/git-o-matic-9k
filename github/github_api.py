@@ -170,3 +170,22 @@ def get_user_stared_repositories(user_name, page_link=None):
         links = {}
 
     return result.json(), links
+
+
+def get_repository_stargazers(repo_name, page_link=None):
+    auth = get_auth()
+
+    result = requests.get(
+        page_link or f'https://api.github.com/repos/{repo_name}/stargazers',
+        auth=auth
+    )
+
+    rate_limit_update(result.headers)
+    check_for_errors(result)
+
+    if 'link' in result.headers.keys():
+        links = links_from_header.extract(result.headers['link'])
+    else:
+        links = {}
+
+    return result.json(), links
