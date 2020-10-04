@@ -1,3 +1,6 @@
+from datetime import timedelta
+from django.utils import timezone
+
 from celery import shared_task
 
 from . import services
@@ -17,8 +20,10 @@ def add_or_update_user(user_name):
         return
 
     dev_data = github_api.get_user(user_name)
-
     services.add_or_update_user(dev_data)
+
+    eta = timezone.now() + timedelta(seconds=45)
+    add_or_update_user_followers.apply_async(args=[user_name], eta=eta)
 
 
 @shared_task
