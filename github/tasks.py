@@ -9,10 +9,10 @@ from .models import Developer, Repository
 @shared_task
 def full_profile_sync(user_name):
     add_or_update_user.delay(user_name)
-    add_or_update_all_user_repositories.delay(user_name)
+    add_or_update_all_user_repositories.delay(user_name, populate_stargazers=True)
     add_or_update_user_followers.delay(user_name)
     add_or_update_user_followings.delay(user_name)
-    add_or_update_user_starred_repositories(user_name)
+    add_or_update_user_starred_repositories.delay(user_name)
 
 
 @shared_task
@@ -31,7 +31,7 @@ def add_or_update_user(user_name):
 
 
 @shared_task
-def add_or_update_repository(repo_name):
+def add_or_update_repository(repo_name, populate_stargazers=False):
     if not github_api.can_make_new_requests():
         add_or_update_repository.apply_async(
             args=[repo_name],
@@ -50,9 +50,12 @@ def add_or_update_repository(repo_name):
         add_or_update_user.run(user_name)
         services.add_or_update_repository(repo_data)
 
+    if populate_stargazers:
+        add_or_update_repository_stargazers(repo_name)
+
 
 @shared_task
-def add_or_update_all_user_repositories(user_name, next_page_link=None):
+def add_or_update_all_user_repositories(user_name, next_page_link=None, populate_stargazers=False):
     if not github_api.can_make_new_requests():
         add_or_update_all_user_repositories.apply_async(
             args=[user_name, next_page_link],
@@ -64,7 +67,7 @@ def add_or_update_all_user_repositories(user_name, next_page_link=None):
     all_repo_data, links = github_api.list_repositories(user_name, page_link=next_page_link)
 
     for repo_data in all_repo_data:
-        add_or_update_repository.delay(repo_data['full_name'])
+        add_or_update_repository.delay(repo_data['full_name'], populate_stargazers=populate_stargazers)
 
     if 'next' in links.keys():
         add_or_update_all_user_repositories(user_name, links['next'])
