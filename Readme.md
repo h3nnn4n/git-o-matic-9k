@@ -5,6 +5,14 @@ discovery system. Once the system is seeded with at least one user, an
 automated scraper grows the database by following network connections
 (followers and following).
 
+This project is powered by `django`, `djangorestframework` and `celery`.
+
+On only and fully functional version is available on
+[heroku](https://dashboard.heroku.com/apps/secret-gorge-30655).
+The login and password are `test_user` and `b@t09pp#m`. Please not that the
+app is running on a free set of dynos and addons, and as such the performance
+may be low. Nevertheless, it is fully working.
+
 ## Auto throttle
 
 Git-o-matic-9k contains a throttle system, which uses the rate limit data from
