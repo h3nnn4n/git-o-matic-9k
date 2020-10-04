@@ -15,4 +15,7 @@ urlpatterns = [
     path('repositories/trigger_sync/<str:username>/<str:repository>/',
          views.repository_sync,
          name='repository_sync'),
+    path('trigger_discovery/',
+         views.discovery_scraper,
+         name='discovery_scraper'),
 ]

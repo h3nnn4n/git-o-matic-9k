@@ -34,6 +34,15 @@ class Developer(models.Model):
 
     data_source = JSONField()
 
+    def missing_followers(self):
+        return self.followers_count != self.followers.count()
+
+    def missing_following(self):
+        return self.following_count != self.following.count()
+
+    def missing_repositories(self):
+        return self.public_repos != self.repositories.count()
+
 
 class Repository(models.Model):
     """

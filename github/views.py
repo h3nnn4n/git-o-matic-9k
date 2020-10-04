@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from rest_framework import viewsets
 from rest_framework import permissions
 
@@ -95,5 +95,14 @@ def repository_sync(request, username, repository):
 
     repo_full_name = '/'.join([username, repository])
     tasks.add_or_update_repository.delay(repo_full_name, populate_stargazers=True)
+
+    return HttpResponse('ok')
+
+
+def discovery_scraper(request):
+    if not request.user.is_authenticated:
+        return Http404()
+
+    tasks.discovery_scraper.delay()
 
     return HttpResponse('ok')

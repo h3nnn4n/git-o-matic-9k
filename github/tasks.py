@@ -7,6 +7,25 @@ from .models import Developer, Repository
 
 
 @shared_task
+def discovery_scraper(count=5):
+    enqueued = 0
+
+    for developer in Developer.objects.all():
+        trigger_conditions = [
+            developer.missing_followers(),
+            developer.missing_following(),
+            developer.missing_repositories(),
+        ]
+
+        if any(trigger_conditions):
+            full_profile_sync.delay(developer.login)
+            enqueued += 1
+
+        if enqueued >= count:
+            break
+
+
+@shared_task
 def full_profile_sync(user_name):
     add_or_update_user.delay(user_name)
     add_or_update_all_user_repositories.delay(user_name, populate_stargazers=True)
