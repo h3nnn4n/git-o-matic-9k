@@ -78,55 +78,10 @@ class RateLimitViewSet(viewsets.ReadOnlyModelViewSet):
     }
 
 
-def full_developer_sync(request, username):
-    """
-    Endpoint for triggering a full sync of a developer. This updates the
-    developer record, the followers and following lists, starred repositories,
-    fetches all of the developer's repositories and its stargazer.
-    """
-    if request.user.is_authenticated:
-        print('authenticated user')
-    else:
-        print('not authenticated user')
-
-    tasks.full_profile_sync.delay(username)
-
-    return HttpResponse('ok')
-
-
-def repository_sync(request, username, repository):
-    """
-    Endpoint for triggering a full sync of a repository. This fetches and
-    updates the repository and its owner. Stargazers are also created and
-    updated.
-    """
-    if request.user.is_authenticated:
-        print('authenticated user')
-    else:
-        print('not authenticated user')
-
-    repo_full_name = '/'.join([username, repository])
-    tasks.add_or_update_repository.delay(repo_full_name, populate_stargazers=True)
-
-    return HttpResponse('ok')
-
-
-def discovery_scraper(request):
-    """
-    Triggers the discovery scrapper. This by default picks 5 users where the
-    following, followers or repository count if out of date and runs a full
-    sync.
-    """
-    if not request.user.is_authenticated:
-        return Http404()
-
-    tasks.discovery_scraper.delay()
-
-    return HttpResponse('ok')
-
 class TasksView(viewsets.ViewSet):
     """
-    Endpoint for listing tasks and triggering them
+    Endpoint for listing tasks and triggering them.
+    Available actions are:
     """
     serializer_class = TaskSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -182,7 +137,31 @@ class TasksView(viewsets.ViewSet):
 
     def list(self, _request):
         """
-        Lists the available actions
+        Endpoint for listing the available actions.
+
+        Acceptable actions are:
+
+        1) full_profile_sync: Action for for triggering a full sync of a
+        developer. This updates the developer record, the followers and
+        following lists, starred repositories, fetches all of the developer's
+        repositories and its stargazer. Requires `username` to be set with a
+        valid github username.
+
+        2) full_repository_sync: Endpoint for triggering a full sync of a
+        repository. This fetches and updates the repository and its owner.
+        Stargazers are also created and updated. Requires `username` to be set
+        with a valid github username. Requires `repo_name` to be set with a
+        valid github repository name (not including the username, e.g.
+        `garapa` and not `h3nnn4n/garapa`).
+
+        3) discovery_scraper: Triggers the discovery scrapper. This by default
+        picks 5 users where the following, followers or repository count if out
+        of date and runs a full sync. Requires `username` to be set with a
+        valid github username.
+
+        Make a post to this endpoint to trigger the action. e.g. a post with
+        `name=full_repository_sync`, `username=h3nnn4n` and `repo_name=garapa`
+        will fetch and sync the repository `h3nnn4n/garapa` asyncronously.
         """
         serializer = TaskSerializer(instance=TASKS.values(), many=True)
         return response.Response(serializer.data)
