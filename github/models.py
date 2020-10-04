@@ -6,7 +6,7 @@ from django.conf import settings
 
 class Developer(models.Model):
     """
-        Represents a github user
+    Represents a github user
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     github_id = models.CharField(max_length=256)
@@ -35,18 +35,33 @@ class Developer(models.Model):
     data_source = JSONField()
 
     def missing_followers(self):
+        """
+        Return True if the number of reported followers by github differs from
+        the number of followers in the database. Returns False, otherwise.
+        Useful for detecting out of sync data.
+        """
         return self.followers_count != self.followers.count()
 
     def missing_following(self):
+        """
+        Return True if the number of reported following users by github differs
+        from the number of following users in the database. Returns False,
+        otherwise.  Useful for detecting out of sync data.
+        """
         return self.following_count != self.following.count()
 
     def missing_repositories(self):
+        """
+        Return True if the number of reported repositories by github differs
+        from the number of repositories in the database. Returns False,
+        otherwise.  Useful for detecting out of sync data.
+        """
         return self.public_repos != self.repositories.count()
 
 
 class Repository(models.Model):
     """
-        Represents a github repository
+    Represents a github repository
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     owner = models.ForeignKey(Developer, on_delete=models.CASCADE, related_name='repositories')
@@ -89,4 +104,8 @@ class RateLimit(models.Model):
     rate_reset = models.DateTimeField()
 
     def can_make_new_requests(self):
+        """
+        Return True if there are enough remaining requests in the quota to make
+        a new request.
+        """
         return self.rate_remaining > settings.RATE_LIMIT_STOP_THRESHOLD
