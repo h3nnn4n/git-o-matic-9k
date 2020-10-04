@@ -3,7 +3,7 @@ from celery import shared_task
 from . import services
 from . import github_api
 
-from .models import Developer, Repository
+from .models import Developer
 
 
 @shared_task
