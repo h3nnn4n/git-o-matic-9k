@@ -13,6 +13,12 @@ The login and password are `test_user` and `b@t09pp#m`. Please not that the
 app is running on a free set of dynos and addons, and as such the performance
 may be low. Nevertheless, it is fully working.
 
+The github repository for this project includes a fully functional CI, setup
+using github actions. It tests the codebase with `pylint` and runs automated
+unit tests. An action automatically prepares a deploy pr if there is new code
+on master. Finally, if a merge into the `production` branch happens, it gets
+deployed automatically to heroku.
+
 ## Auto throttle
 
 Git-o-matic-9k contains a throttle system, which uses the rate limit data from
