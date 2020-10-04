@@ -161,3 +161,16 @@ class AddOrUpdateUserFollowersTaskTest(TestCase):
                 'wesklei'
             ]
         )
+
+    def test_populate_following_from_followers(self):
+        """
+        Test that if X is being followed by Y, then Y must also be following X
+        """
+        with test_vcr.use_cassette('get_user_ruanpablom.yaml', record='none'):
+            tasks.add_or_update_user('ruanpablom')
+
+        with test_vcr.use_cassette('get_user_followers_ruanpablom.yaml', record='none'):
+            tasks.add_or_update_user_followers('ruanpablom')
+
+        developer_following = Developer.objects.get(login='GlauberrBatista')
+        self.assertEqual(developer_following.following.count(), 1)

@@ -22,7 +22,8 @@ class Developer(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
-    followers = models.ManyToManyField('Developer')
+    followers = models.ManyToManyField('Developer', related_name='reverse_followers')
+    following = models.ManyToManyField('Developer', related_name='reverse_following')
 
     followers_count = models.IntegerField(default=0)
     following_count = models.IntegerField(default=0)

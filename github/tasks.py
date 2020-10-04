@@ -93,6 +93,7 @@ def add_or_update_user_followers(user_name, next_page_link=None):
         dev_data = github_api.get_user(follower_data['login'])
         follower_developer = services.add_or_update_user(dev_data)
         developer.followers.add(follower_developer)
+        follower_developer.following.add(developer)
 
     if 'next' in links.keys():
         add_or_update_user_followers.delay(user_name, links['next'])
