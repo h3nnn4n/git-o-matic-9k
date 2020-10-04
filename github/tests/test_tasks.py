@@ -14,9 +14,15 @@ test_vcr = vcr.VCR(
 
 
 class GetOrUpdateAllUserRepositories(TestCase):
+    """
+    Tests the add_or_update_all_user_repositories task
+    """
     @unittest.skip('Celery config isnt being properly overriden, so the test doesnt work')
     @override_settings(celery_always_eager=True)
     def test_create_all_user_repositories(self):
+        """
+        Tests that all user repositories are created
+        """
         repository_count_before = Repository.objects.count()
 
         with unittest.mock.patch('celery.celery_always_eager', True, create=True):
@@ -32,9 +38,19 @@ class GetOrUpdateAllUserRepositories(TestCase):
 
 
 class AddOrUpdateRepositoryTaskTest(TestCase):
+    """
+    Tests the add_or_update_repository task
+    """
     def test_create_repository(self):
+        """
+        Tests that all user repositories are created
+        """
         with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
             tasks.add_or_update_repository('h3nnn4n/garapa')
+
+        repository = Repository.objects.first()
+
+        self.assertEqual(repository.full_name, 'h3nnn4n/garapa')
 
 
     def test_create_user_for_repository_if_not_found(self):
@@ -54,6 +70,9 @@ class AddOrUpdateRepositoryTaskTest(TestCase):
 
 
     def test_create_repository_found_for_the_first_time(self):
+        """
+        Test that a repository is created if it is the first time it is found
+        """
         repository_count_before = Repository.objects.count()
 
         with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
@@ -66,6 +85,9 @@ class AddOrUpdateRepositoryTaskTest(TestCase):
 
 
     def test_update_existing_repository(self):
+        """
+        Test that a repository is updated if it was found before
+        """
         # Setup
         with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
             tasks.add_or_update_repository('h3nnn4n/garapa')
@@ -90,7 +112,13 @@ class AddOrUpdateRepositoryTaskTest(TestCase):
 
 
 class AddOrUpdateUserTaskTest(TestCase):
+    """
+    Tests the add_or_update_user task
+    """
     def test_create_user(self):
+        """
+        Test that a user is created with the correct fields
+        """
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
 
@@ -101,6 +129,9 @@ class AddOrUpdateUserTaskTest(TestCase):
 
 
     def test_create_user_found_for_the_first_time(self):
+        """
+        Test that a user is created when it is found for the first time
+        """
         developer_count_before = Developer.objects.count()
 
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
@@ -110,6 +141,9 @@ class AddOrUpdateUserTaskTest(TestCase):
 
 
     def test_update_existing_user(self):
+        """
+        Test that a user is updated if it already exists in the database
+        """
         # Setup
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
@@ -132,7 +166,14 @@ class AddOrUpdateUserTaskTest(TestCase):
 
 
 class AddOrUpdateUserFollowersTaskTest(TestCase):
+    """
+    Tests the add_or_update_user_followers task
+    """
     def test_populate_followers(self):
+        """
+        Test that the followers of an user are properly created and that the
+        relation contains the correct data
+        """
         with test_vcr.use_cassette('get_user_ruanpablom.yaml', record='none'):
             tasks.add_or_update_user('ruanpablom')
 
@@ -177,7 +218,14 @@ class AddOrUpdateUserFollowersTaskTest(TestCase):
 
 
 class AddOrUpdateUserFollowingTaskTest(TestCase):
+    """
+    Tests the add_or_update_user_followings task
+    """
     def test_populate_following(self):
+        """
+        Test that the users following an user are properly created and that the
+        relation contains the correct data
+        """
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
 
@@ -211,7 +259,14 @@ class AddOrUpdateUserFollowingTaskTest(TestCase):
 
 
 class AddOrUpdateUserStarredRepositoriesTest(TestCase):
+    """
+    Tests the add_or_update_user_starred_repositories task
+    """
     def test_populate_starred_repositories(self):
+        """
+        Test that the starred repositories of an user are properly created and
+        that the relation contains the correct data
+        """
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
 
@@ -229,7 +284,14 @@ class AddOrUpdateUserStarredRepositoriesTest(TestCase):
 
 
 class AddOrUpdateRespositoryStargazersTest(TestCase):
+    """
+    Tests the add_or_update_repository_stargazers task
+    """
     def test_populate_stargazers(self):
+        """
+        Test that the stargazers of a repository are properly created and that
+        the relation contains the correct data
+        """
         with test_vcr.use_cassette('get_repo_and_user_h3nnn4n_garapa.yaml', record='none'):
             tasks.add_or_update_repository('h3nnn4n/garapa')
 

@@ -8,7 +8,13 @@ from github.models import RateLimit
 
 
 class RateLimitTest(TestCase):
+    """
+    Tests the RateLimit model
+    """
     def test_can_make_new_requests_true(self):
+        """
+        Check that the record allows news requests if the rate_remaining is high enough
+        """
         ratelimit = RateLimit.objects.create(
             rate_limit=15000,
             rate_remaining=8196,
@@ -19,6 +25,9 @@ class RateLimitTest(TestCase):
         self.assertTrue(ratelimit.can_make_new_requests())
 
     def test_can_make_new_requests_false(self):
+        """
+        Check that the record blocks news requests if the rate_remaining is too low
+        """
         ratelimit = RateLimit.objects.create(
             rate_limit=15000,
             rate_remaining=10,

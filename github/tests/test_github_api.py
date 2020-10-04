@@ -17,7 +17,13 @@ test_vcr = vcr.VCR(
 
 
 class RateLimitUpdateTest(TestCase):
+    """
+    Tests the RateLimit auto update feature
+    """
     def test_create_rate_limit_object_if_it_doesnt_exit(self):
+        """
+        Tests that the RateLimit is populated during the first request
+        """
         self.assertEqual(RateLimit.objects.count(), 0)
 
         with test_vcr.use_cassette('ratelimit_get_user_1.yaml', record='none'):
@@ -27,6 +33,9 @@ class RateLimitUpdateTest(TestCase):
 
 
     def test_update_ratelimit_data(self):
+        """
+        Tests that the RateLimit is updated with new api calls
+        """
         with test_vcr.use_cassette('ratelimit_get_user_1.yaml', record='none'):
             github_api.get_user('h3nnn4n')
 
@@ -41,10 +50,21 @@ class RateLimitUpdateTest(TestCase):
 
 
 class CanMakeNewRequests(TestCase):
+    """
+    Tests the RateLimit interface
+    """
     def test_can_make_new_requests_true_with_no_ratelimit_data(self):
+        """
+        Check that the record allows one new request if there is not RateLimit
+        record on the database. This allows for the rate limit data to be
+        fetched.
+        """
         self.assertTrue(github_api.can_make_new_requests())
 
     def test_can_make_new_requests_true(self):
+        """
+        Check that the record allows news requests if the rate_remaining is high enough
+        """
         RateLimit.objects.create(
             id=1,
             rate_limit=5000,
@@ -56,6 +76,9 @@ class CanMakeNewRequests(TestCase):
         self.assertTrue(github_api.can_make_new_requests())
 
     def test_can_make_new_requests_false(self):
+        """
+        Check that the record blocks news requests if the rate_remaining is too low
+        """
         RateLimit.objects.create(
             id=1,
             rate_limit=5000,

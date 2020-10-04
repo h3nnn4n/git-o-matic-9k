@@ -2,6 +2,12 @@ from .models import Developer, Repository
 
 
 def add_or_update_user(data):
+    """
+    Takes the output from github's /users endpoint and creates an user with
+    it, or updates the user if it already exists in the database. It returns
+    the newly created/updated record.
+    """
+
     fields = [
         'login',
         'name',
@@ -31,6 +37,12 @@ def add_or_update_user(data):
 
 
 def add_or_update_repository(data):
+    """
+    Takes the output from github's /repos endpoint and creates a repository
+    with it, or updates the repositoryf it already exists in the database. It
+    returns the newly created/updated record.
+    """
+
     fields = [
         'name',
         'full_name',
