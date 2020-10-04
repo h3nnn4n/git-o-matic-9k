@@ -24,6 +24,7 @@ router = routers.DefaultRouter()
 router.register(r'developers', views.DeveloperViewSet)
 router.register(r'repositories', views.RepositoryViewSet)
 router.register(r'rate_limit', views.RateLimitViewSet)
+router.register(r'tasks', views.TasksView, basename='tasks')
 
 urlpatterns = [
     path('', include(router.urls)),

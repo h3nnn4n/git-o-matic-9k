@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from .models import Developer, Repository, RateLimit
+from .enumerations import Task
 
 
 class RepositorySerializer(serializers.HyperlinkedModelSerializer):
@@ -73,3 +74,21 @@ class RateLimitSerializer(serializers.HyperlinkedModelSerializer):
     class Meta: # pylint: disable=missing-class-docstring
         model = RateLimit
         fields = '__all__'
+
+
+class TaskSerializer(serializers.Serializer):
+    """
+    Serializer that exposes app tasks. I.e. endpoint that trigger an action
+    """
+    id = serializers.IntegerField(read_only=True)
+    name = serializers.CharField(max_length=256, read_only=False)
+    username = serializers.CharField(max_length=256, read_only=False)
+    repo_name = serializers.CharField(max_length=256, read_only=False)
+
+    def create(self, validated_data):
+        return Task(id=None, **validated_data)
+
+    def update(self, instance, validated_data):
+        for field, value in validated_data.items():
+            setattr(instance, field, value)
+        return instance

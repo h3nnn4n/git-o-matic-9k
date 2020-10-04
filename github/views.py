@@ -1,9 +1,11 @@
 from django.http import HttpResponse, Http404
 from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework import permissions, response
 
 from .models import Developer, Repository, RateLimit
-from .serializers import DeveloperSerializer, RepositorySerializer, RateLimitSerializer
+from .serializers import DeveloperSerializer, RepositorySerializer
+from .serializers import RateLimitSerializer, TaskSerializer
+from .enumerations import TASKS
 from . import tasks
 
 
@@ -121,3 +123,71 @@ def discovery_scraper(request):
     tasks.discovery_scraper.delay()
 
     return HttpResponse('ok')
+
+class TasksView(viewsets.ViewSet):
+    """
+    Endpoint for listing tasks and triggering them
+    """
+    serializer_class = TaskSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request, *_args, **_kwargs): # pylint: disable=too-many-return-statements
+        """
+        Triggers an actions
+        """
+        task_name = request.POST.get('name')
+        username = request.POST.get('username')
+        repo_name = request.POST.get('repo_name')
+
+        if task_name == 'full_profile_sync':
+            if username == '':
+                return response.Response(
+                    {'success': 'no', 'error': 'Missing username. Provide a valid github username'},
+                    status=406
+                )
+
+            tasks.full_profile_sync.delay(username)
+            return response.Response({'success': 'yes'})
+
+        if task_name == 'full_repository_sync':
+            if username == '':
+                return response.Response(
+                    {'success': 'no', 'error': 'Missing username. Provide a valid github username'},
+                    status=406
+                )
+
+            if repo_name == '':
+                return response.Response(
+                    {'success': 'no', 'error': 'Missing repo_name. Provide a valid repository name'},
+                    status=406
+                )
+
+            tasks.add_or_update_repository.delay('/'.join([username, repo_name]), populate_stargazers=True)
+            return response.Response({'success': 'yes'})
+
+        if task_name == 'discovery_scraper':
+            if username == '':
+                return response.Response(
+                    {'success': 'no', 'error': 'Missing username. Provide a valid github username'},
+                    status=406
+                )
+
+            tasks.discovery_scraper.delay()
+            return response.Response({'success': 'yes'})
+
+        return response.Response(
+            {'success': 'no', 'error': f'task name {task_name} not recognized'},
+            status=406
+        )
+
+    def list(self, _request):
+        """
+        Lists the available actions
+        """
+        serializer = TaskSerializer(instance=TASKS.values(), many=True)
+        return response.Response(serializer.data)
+
+    # Not sure if this is a good idea or not. But it works
+    @classmethod
+    def get_extra_actions(cls):
+        return []
