@@ -2,7 +2,7 @@
 ignore=migrations
 
 [MESSAGES CONTROL]
-disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,too-few-public-methods,too-many-ancestors,no-self-use,no-member
+disable=missing-module-docstring,too-few-public-methods,too-many-ancestors,no-self-use,no-member,duplicate-code
 
 [LOGGING]
 logging-format-style=new

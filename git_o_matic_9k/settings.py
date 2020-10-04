@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 
 import django_heroku
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'django_filters',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -170,3 +172,16 @@ django_heroku.settings(locals())
 # Github api settings
 # stop making new requests if there are less than 100 availiable
 RATE_LIMIT_STOP_THRESHOLD = 25
+
+
+# Celery scheduled tasks settings
+CELERY_BEAT_SCHEDULE = {
+    'discovery_scraper': {
+        'task': 'github.tasks.discovery_scraper',
+        'schedule': crontab(hour='*'),
+    },
+    'heart_beat_task': {
+        'task': 'github.tasks.heart_beat_task',
+        'schedule': crontab(minute='*/1'),
+    },
+}
