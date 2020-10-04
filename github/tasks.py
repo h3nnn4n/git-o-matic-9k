@@ -7,6 +7,13 @@ from .models import Developer
 
 
 @shared_task
+def full_profile_sync(user_name):
+    add_or_update_user.delay(user_name)
+    add_or_update_all_user_repositories.delay(user_name)
+    add_or_update_user_followers.delay(user_name)
+
+
+@shared_task
 def add_or_update_user(user_name):
     if not github_api.can_make_new_requests():
         add_or_update_user.apply_async(
