@@ -1,0 +1,219 @@
+<h1 id="git-o-matic-9k">GIT-O-MATIC-9K</h1>
+<p>Vroom Vroom. Git-o-matic 9k is a fully automated github user and repository discovery system. Once the system is seeded with at least one user, an automated scraper grows the database by following network connections (followers and following).</p>
+<p>This project is powered by <code>django</code>, <code>djangorestframework</code> and <code>celery</code>.</p>
+<p>On only and fully functional version is available on heroku <a href="https://secret-gorge-30655.herokuapp.com/github/">here</a>. The login and password are <code>test_user</code> and <code>b@t09pp#m</code>. Please not that the app is running on a free set of dynos and addons, and as such the performance may be low. Nevertheless, it is fully working.</p>
+<p>The github repository for this project includes a fully functional CI, setup using github actions. It tests the codebase with <code>pylint</code> and runs automated unit tests. An action automatically prepares a deploy pr if there is new code on master. Finally, if a merge into the <code>production</code> branch happens, it gets deployed automatically to heroku.</p>
+<h2 id="documentation">Documentation</h2>
+<p>The API is in fully explorable on a browser by using the <code>djangorestframework</code>. Additionally, a <code>swagger</code> and <code>redoc</code> documentations are available under <a href="https://secret-gorge-30655.herokuapp.com/github/swagger/"><code>/github/swagger</code></a> and <a href="https://secret-gorge-30655.herokuapp.com/github/redoc/"><code>/github/redoc/</code></a>.</p>
+<p>The code is also full documented with doc strings.</p>
+<h2 id="endpoints">Endpoints</h2>
+<p>The root endpoint plus four model endpoints make part of the git-o-matic-9k API:</p>
+<h3 id="root-github">Root: <a href="https://secret-gorge-30655.herokuapp.com/github/"><code>/github/</code></a></h3>
+<p>The api root. It lists and hyperlinks all other endpoints. For example:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/\?page\=42</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true"></a>    <span class="dt">&quot;developers&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/&quot;</span><span class="fu">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true"></a>    <span class="dt">&quot;repositories&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/repositories/&quot;</span><span class="fu">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true"></a>    <span class="dt">&quot;rate_limit&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/rate_limit/&quot;</span><span class="fu">,</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true"></a>    <span class="dt">&quot;tasks&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/tasks/&quot;</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="developers-githubdevelopers">Developers: <a href="https://secret-gorge-30655.herokuapp.com/github/developers/"><code>/github/developers/</code></a></h3>
+<p>This endpoint exposes a list of all developers (that were synced). All relations are hyperlinked. Supports pagination. For example:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/\?page\=42</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true"></a>    <span class="dt">&quot;count&quot;</span><span class="fu">:</span> <span class="dv">1348</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true"></a>    <span class="dt">&quot;next&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/?page=43&quot;</span><span class="fu">,</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true"></a>    <span class="dt">&quot;previous&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/?page=41&quot;</span><span class="fu">,</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true"></a>    <span class="dt">&quot;results&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true"></a>        <span class="fu">{</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true"></a>            <span class="dt">&quot;github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;14107257&quot;</span><span class="fu">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true"></a>            <span class="dt">&quot;login&quot;</span><span class="fu">:</span> <span class="st">&quot;nordcloud&quot;</span><span class="fu">,</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true"></a>            <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;Nordcloud Engineering&quot;</span><span class="fu">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true"></a>            <span class="dt">&quot;location&quot;</span><span class="fu">:</span> <span class="st">&quot;Helsinki, London, Munich, Oslo, Poznań, Stockholm, Malmo, Copenhagen&quot;</span><span class="fu">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true"></a>            <span class="dt">&quot;bio&quot;</span><span class="fu">:</span> <span class="st">&quot;Nordcloud Engineering and Open Source. &quot;</span><span class="fu">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true"></a>            <span class="dt">&quot;company&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true"></a>            <span class="dt">&quot;email&quot;</span><span class="fu">:</span> <span class="st">&quot;info@nordcloud.com&quot;</span><span class="fu">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true"></a>            <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2015-09-03T09:31:50Z&quot;</span><span class="fu">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true"></a>            <span class="dt">&quot;updated_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2020-09-01T19:36:57Z&quot;</span><span class="fu">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true"></a>            <span class="dt">&quot;followers_count&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true"></a>            <span class="dt">&quot;following_count&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true"></a>            <span class="dt">&quot;public_gists&quot;</span><span class="fu">:</span> <span class="dv">0</span><span class="fu">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true"></a>            <span class="dt">&quot;public_repos&quot;</span><span class="fu">:</span> <span class="dv">44</span><span class="fu">,</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true"></a>            <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;...&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true"></a>            <span class="dt">&quot;following&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;...&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true"></a>            <span class="dt">&quot;starred_repositories&quot;</span><span class="fu">:</span> <span class="ot">[</span><span class="st">&quot;...&quot;</span><span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true"></a>            <span class="dt">&quot;repositories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true"></a>                <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/repositories/6049bd29-5039-421c-8bb8-1464b0c97a06/&quot;</span><span class="ot">,</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true"></a>                <span class="st">&quot;...&quot;</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true"></a>            <span class="ot">]</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true"></a>    <span class="ot">]</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<p>Passing an developer/user <code>uuid</code> to this endpoint fetches a single user. Example:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/4f8e76e8-c068-4f21-a36d-a46c4d221c1d/</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a>    <span class="dt">&quot;github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;7543345&quot;</span><span class="fu">,</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true"></a>    <span class="dt">&quot;login&quot;</span><span class="fu">:</span> <span class="st">&quot;h3nnn4n&quot;</span><span class="fu">,</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true"></a>    <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;Renan S Silva&quot;</span><span class="fu">,</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true"></a>    <span class="dt">&quot;location&quot;</span><span class="fu">:</span> <span class="st">&quot;Brazil&quot;</span><span class="fu">,</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true"></a>    <span class="dt">&quot;bio&quot;</span><span class="fu">:</span> <span class="st">&quot;One Renan to code it all. &quot;</span><span class="fu">,</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true"></a>    <span class="dt">&quot;company&quot;</span><span class="fu">:</span> <span class="st">&quot;JobScore&quot;</span><span class="fu">,</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true"></a>    <span class="dt">&quot;email&quot;</span><span class="fu">:</span> <span class="st">&quot;uber.renan@gmail.com&quot;</span><span class="fu">,</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true"></a>    <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2014-05-10T15:45:24Z&quot;</span><span class="fu">,</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true"></a>    <span class="dt">&quot;updated_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2020-10-02T23:44:43Z&quot;</span><span class="fu">,</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true"></a>    <span class="dt">&quot;followers_count&quot;</span><span class="fu">:</span> <span class="dv">62</span><span class="fu">,</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true"></a>    <span class="dt">&quot;following_count&quot;</span><span class="fu">:</span> <span class="dv">4</span><span class="fu">,</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true"></a>    <span class="dt">&quot;public_gists&quot;</span><span class="fu">:</span> <span class="dv">16</span><span class="fu">,</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true"></a>    <span class="dt">&quot;public_repos&quot;</span><span class="fu">:</span> <span class="dv">164</span><span class="fu">,</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true"></a>    <span class="dt">&quot;followers&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true"></a>        <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/bdea3017-63ce-444c-b758-d3204122f7c5/&quot;</span><span class="ot">,</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true"></a>        <span class="st">&quot;...&quot;</span><span class="ot">,</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true"></a>    <span class="dt">&quot;following&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true"></a>        <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/8d909acc-6419-4c69-a24c-69470b28d35f/&quot;</span><span class="ot">,</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true"></a>        <span class="st">&quot;...&quot;</span><span class="ot">,</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true"></a>    <span class="dt">&quot;starred_repositories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true"></a>        <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/repositories/89fdc037-b4f8-47ce-a7fa-2f2dc0713524/&quot;</span><span class="ot">,</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true"></a>        <span class="st">&quot;...&quot;</span><span class="ot">,</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true"></a>    <span class="dt">&quot;repositories&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true"></a>        <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/repositories/39f44062-1d70-4d6e-9479-cd2439adf03b/&quot;</span><span class="ot">,</span></span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true"></a>        <span class="st">&quot;...&quot;</span><span class="ot">,</span></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true"></a>    <span class="ot">]</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<p>Filters are also supported and fully docummented at the <a href="https://secret-gorge-30655.herokuapp.com/github/swagger/"><code>/github/swagger</code></a> page.</p>
+<h3 id="repositories-githubrepositories">Repositories: <a href="https://secret-gorge-30655.herokuapp.com/github/repositories/"><code>/github/repositories/</code></a></h3>
+<p>This endpoint exposes a list of all repositories (that were synced). All relations are hyperlinked. For example:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/repositories/</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a>    <span class="dt">&quot;count&quot;</span><span class="fu">:</span> <span class="dv">1191</span><span class="fu">,</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true"></a>    <span class="dt">&quot;next&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/repositories/?page=2&quot;</span><span class="fu">,</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true"></a>    <span class="dt">&quot;previous&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true"></a>    <span class="dt">&quot;results&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true"></a>        <span class="fu">{</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true"></a>            <span class="dt">&quot;owner&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/153b11f4-d0f8-4f78-a652-e13521d09436/&quot;</span><span class="fu">,</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true"></a>            <span class="dt">&quot;github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;299566089&quot;</span><span class="fu">,</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true"></a>            <span class="dt">&quot;owner_github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;15267120&quot;</span><span class="fu">,</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true"></a>            <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;MazeGenerator&quot;</span><span class="fu">,</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true"></a>            <span class="dt">&quot;full_name&quot;</span><span class="fu">:</span> <span class="st">&quot;89netraM/MazeGenerator&quot;</span><span class="fu">,</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true"></a>            <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="st">&quot;A collection of algorithms for generating mazes&quot;</span><span class="fu">,</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true"></a>            <span class="dt">&quot;homepage&quot;</span><span class="fu">:</span> <span class="st">&quot;&quot;</span><span class="fu">,</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true"></a>            <span class="dt">&quot;language&quot;</span><span class="fu">:</span> <span class="st">&quot;Rust&quot;</span><span class="fu">,</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true"></a>            <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2020-09-29T09:20:44Z&quot;</span><span class="fu">,</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true"></a>            <span class="dt">&quot;updated_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2020-10-04T10:20:43Z&quot;</span><span class="fu">,</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true"></a>            <span class="dt">&quot;has_downloads&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true"></a>            <span class="dt">&quot;has_issues&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true"></a>            <span class="dt">&quot;has_pages&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true"></a>            <span class="dt">&quot;has_projects&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true"></a>            <span class="dt">&quot;has_wiki&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true"></a>            <span class="dt">&quot;private&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true"></a>            <span class="dt">&quot;archived&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true"></a>            <span class="dt">&quot;disabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true"></a>            <span class="dt">&quot;stargazers&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true"></a>                <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/87eee21b-09a7-4fac-9c24-79a1bbf22796/&quot;</span><span class="ot">,</span></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true"></a>                <span class="st">&quot;...&quot;</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true"></a>            <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true"></a>            <span class="dt">&quot;stargazers_count&quot;</span><span class="fu">:</span> <span class="dv">52</span><span class="fu">,</span></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a>            <span class="dt">&quot;subscribers_count&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a>            <span class="dt">&quot;watchers_count&quot;</span><span class="fu">:</span> <span class="dv">52</span><span class="fu">,</span></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a>            <span class="dt">&quot;open_issues_count&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a><span class="er">}</span></span></code></pre></div>
+<p>It is possible to fetch data about a single <code>uuid</code> by passing it to the endpoint. For example:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/repositories/d1a4bbb5-e6ad-426a-8303-8f132cb6fcf5/</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true"></a>    <span class="dt">&quot;owner&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/4f8e76e8-c068-4f21-a36d-a46c4d221c1d/&quot;</span><span class="fu">,</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true"></a>    <span class="dt">&quot;github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;76605426&quot;</span><span class="fu">,</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true"></a>    <span class="dt">&quot;owner_github_id&quot;</span><span class="fu">:</span> <span class="st">&quot;7543345&quot;</span><span class="fu">,</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true"></a>    <span class="dt">&quot;name&quot;</span><span class="fu">:</span> <span class="st">&quot;garapa&quot;</span><span class="fu">,</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true"></a>    <span class="dt">&quot;full_name&quot;</span><span class="fu">:</span> <span class="st">&quot;h3nnn4n/garapa&quot;</span><span class="fu">,</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true"></a>    <span class="dt">&quot;description&quot;</span><span class="fu">:</span> <span class="st">&quot;A gameboy emulator, written in C with an optional tetris AI and Julia API&quot;</span><span class="fu">,</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true"></a>    <span class="dt">&quot;homepage&quot;</span><span class="fu">:</span> <span class="st">&quot;&quot;</span><span class="fu">,</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true"></a>    <span class="dt">&quot;language&quot;</span><span class="fu">:</span> <span class="st">&quot;C&quot;</span><span class="fu">,</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true"></a>    <span class="dt">&quot;created_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2016-12-15T23:52:01Z&quot;</span><span class="fu">,</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true"></a>    <span class="dt">&quot;updated_at&quot;</span><span class="fu">:</span> <span class="st">&quot;2019-04-21T22:41:47Z&quot;</span><span class="fu">,</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true"></a>    <span class="dt">&quot;has_downloads&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true"></a>    <span class="dt">&quot;has_issues&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true"></a>    <span class="dt">&quot;has_pages&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true"></a>    <span class="dt">&quot;has_projects&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true"></a>    <span class="dt">&quot;has_wiki&quot;</span><span class="fu">:</span> <span class="kw">true</span><span class="fu">,</span></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true"></a>    <span class="dt">&quot;private&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true"></a>    <span class="dt">&quot;archived&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true"></a>    <span class="dt">&quot;disabled&quot;</span><span class="fu">:</span> <span class="kw">false</span><span class="fu">,</span></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true"></a>    <span class="dt">&quot;stargazers&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true"></a>        <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/developers/5bd1a553-5059-48bc-b055-bfe04e98cd61/&quot;</span><span class="ot">,</span></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true"></a>        <span class="st">&quot;...&quot;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true"></a>    <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true"></a>    <span class="dt">&quot;stargazers_count&quot;</span><span class="fu">:</span> <span class="dv">12</span><span class="fu">,</span></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true"></a>    <span class="dt">&quot;subscribers_count&quot;</span><span class="fu">:</span> <span class="dv">4</span><span class="fu">,</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true"></a>    <span class="dt">&quot;watchers_count&quot;</span><span class="fu">:</span> <span class="dv">12</span><span class="fu">,</span></span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true"></a>    <span class="dt">&quot;open_issues_count&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<p>Filters are also supported and fully docummented at the <a href="https://secret-gorge-30655.herokuapp.com/github/swagger/"><code>/github/swagger</code></a> page.</p>
+<h3 id="rate-limiting-githubrate_limit">Rate Limiting: <a href="https://secret-gorge-30655.herokuapp.com/github/rate_limit/"><code>/github/rate_limit/</code></a></h3>
+<p>This endpoint exposes the rate limit data of the underlying github api key. There may be no data, if no requests to the github API have been made by the service. Each request updated this record. If no api keys are configured, then this record will reflect the rate limits for an unauthenticated user. The record, if it exists, will always have id <code>1</code>. Example:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/rate_limit/</span></code></pre></div>
+<p>returns</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true"></a><span class="fu">{</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true"></a>    <span class="dt">&quot;count&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true"></a>    <span class="dt">&quot;next&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true"></a>    <span class="dt">&quot;previous&quot;</span><span class="fu">:</span> <span class="kw">null</span><span class="fu">,</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true"></a>    <span class="dt">&quot;results&quot;</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true"></a>        <span class="fu">{</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true"></a>            <span class="dt">&quot;url&quot;</span><span class="fu">:</span> <span class="st">&quot;https://secret-gorge-30655.herokuapp.com/github/rate_limit/1/&quot;</span><span class="fu">,</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true"></a>            <span class="dt">&quot;rate_limit&quot;</span><span class="fu">:</span> <span class="dv">5000</span><span class="fu">,</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true"></a>            <span class="dt">&quot;rate_remaining&quot;</span><span class="fu">:</span> <span class="dv">1749</span><span class="fu">,</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true"></a>            <span class="dt">&quot;rate_reset_raw&quot;</span><span class="fu">:</span> <span class="dv">1601853380</span><span class="fu">,</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true"></a>            <span class="dt">&quot;rate_reset&quot;</span><span class="fu">:</span> <span class="st">&quot;2020-10-04T23:16:20Z&quot;</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true"></a>        <span class="fu">}</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true"></a>    <span class="ot">]</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
+<h3 id="tasks-githubtasks">Tasks: <a href="https://secret-gorge-30655.herokuapp.com/github/tasks/"><code>/github/tasks/</code></a></h3>
+<p>Endpoint for listing available actions and triggering them. A <code>GET</code> request lists the tasks, a <code>POST</code> requests triggers it.</p>
+<p>Acceptable actions are:</p>
+<ol type="1">
+<li><p><code>full_profile_sync</code>: Action for for triggering a full sync of a developer. This updates the developer record, the followers and following lists, starred repositories, fetches all of the developer’s repositories and its stargazer. Requires <code>username</code> to be set with a valid github username.</p></li>
+<li><p><code>full_repository_sync</code>: Endpoint for triggering a full sync of a repository. This fetches and updates the repository and its owner. Stargazers are also created and updated. Requires <code>username</code> to be set with a valid github username. Requires <code>repo_name</code> to be set with a valid github repository name (not including the username, e.g. <code>garapa</code> and not <code>h3nnn4n/garapa</code>).</p></li>
+<li><p><code>discovery_scraper</code>: Triggers the discovery scrapper. This by default picks 5 users where the following, followers or repository count if out of date and runs a full sync.</p></li>
+</ol>
+<p>Make a post to this endpoint to trigger the action. e.g. a post with <code>name=full_repository_sync</code>, <code>username=h3nnn4n</code> and <code>repo_name=garapa</code> will fetch and sync the repository <code>h3nnn4n/garapa</code> asyncronously.</p>
+<p>On a successfull <code>POST</code> request a response with code 200 and message <code>{'success': 'yes'}</code> will be sent.</p>
+<p>In case of failure, a response with code 406 will be sent with <code>'success': 'no'</code> and an appropriate error message. For example: <code>{'success': 'no', 'error': 'Missing repo_name. Provide a valid repository name'}</code></p>
+<h2 id="periodic-tasks">Periodic tasks</h2>
+<p>Two periodic tasks are scheduled:</p>
+<ol type="1">
+<li><p>The <code>discovery_scraper</code>. This runs every hour and fetches new users that are following or being followed by some user already in the database. If the database is empty then nothing happens.</p></li>
+<li><p>The <code>heart_beat_task</code>. It runs every minute and logs a <code>"ping"</code> string. This can be used to detect that celery and the celery scheduler are running.</p></li>
+</ol>
+<p>This can be changed or new tasks can be added by editing <code>CELERY_BEAT_SCHEDULE</code> on <code>settings.py</code>. See https://docs.celeryproject.org/en/stable/userguide/periodic-tasks.html for more information.</p>
+<p>Another way to schedule tasks is to make a <code>POST</code> request to <code>/github/tasks/</code> with the paramenter <code>name</code> set to the task name. So far only the <code>discovery_scraper</code>, <code>full_profile_sync</code> and <code>full_repository_sync</code> tasks are supported.</p>
+<h2 id="auto-throttle">Auto throttle</h2>
+<p>Git-o-matic-9k contains a throttle system, which uses the rate limit data from github to prevent running services that will surelly fail. These tasks, instead of failing, are automatically rescheduled to when then reset quota is reset. Another useful feature is limiting how much of the quota can be used by the service, which allows more than one resource intensive application to work on the same account without starving critical systems of requests.</p>
+<p>The system also supports working unauthenticated on the API. Which grately reduces the system throuput, but allows for a quicker setup and testing.</p>
+<p>Tasks are started if there are at least one remaining request in the quota. However, many tasks require several requests to work. If the request quota is exausted during a rask, then <code>HttpErrorExeption</code> will be raised with an <code>API rate limit exceeded</code> message. The rationale is that it is ok to postpone a task, but running a task half way through is not. As such, if a task runs out of request quota during its execution it is properly signicaled as an error.</p>
+<h2 id="local-setup">Local setup</h2>
+<ol type="1">
+<li>Set up <a href="https://github.com/pyenv/pyenv"><code>pyenv</code></a> and <a href="https://github.com/pypa/pipenv"><code>pipenv</code></a></li>
+<li>Run <code>pyenv install $(cat .python-version)</code></li>
+<li>Run <code>pipenv install --dev</code></li>
+</ol>
+<ul>
+<li>If running <code>pipenv install</code> fails with an error related to <code>psycopg2</code>, then running the following before running <code>pipenv install</code> again might solve the issue, assuming you are on macos and installed openssl with homebrew: <code>LDFLAGS="-L/usr/local/opt/openssl/lib" CPPFLAGS="-I/usr/local/opt/openssl/include" pipenv install --dev</code></li>
+</ul>
+<ol start="4" type="1">
+<li>Ensure that <a href="https://www.rabbitmq.com/"><code>rabbitmq</code></a> and <a href="https://www.postgresql.org/"><code>postgresql</code></a> are installed. Optionally install either <a href="https://github.com/mattn/goreman"><code>goreman</code></a>, <a href="https://github.com/theforeman/foreman"><code>foreman</code></a>, or an equivalent.</li>
+<li>Create a database for the project with <code>createdb git_o_matic_9k</code></li>
+<li>Create an admin user with: <code>pipenv run python manage.py createsuperuser   --email some@mail.com --username admin</code> and set a password</li>
+<li>Set up github api key and username with <code>export GITHUB_API_KEY='ultra_secret_key'</code> and <code>export GITHUB_API_USER='awesome_user'</code>. Alternativelly, it is possible to run the application without setting it, but be aware that the rate limit will be reached very quickly</li>
+<li>Run <code>goreman -f Procfile.dev</code>, or equivalent. Alternativelly it the following can be used: <code>pipenv run python manage.py runserver</code> and <code>pipenv run   celery -A git_o_matic_9k  worker --beat --loglevel INFO</code></li>
+</ol>
+<h2 id="testing">Testing</h2>
+<p>Assuming that at least the first 5 steps were followed, the test suite can be ran with: <code>pipenv run python manage.py test</code></p>
+<h2 id="license">LICENSE</h2>
+<p>See <a href="LICENSE">LICENSE</a></p>
