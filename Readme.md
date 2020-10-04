@@ -138,7 +138,7 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-#### `/github/repositories/`
+#### [`/github/repositories/`](https://secret-gorge-30655.herokuapp.com/github/repositories/)
 This endpoint exposes a list of all repositories (that were synced). All
 relations are hyperlinked. For example:
 
@@ -228,7 +228,7 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-#### `/github/rate_limit/`
+#### [`/github/rate_limit/`](https://secret-gorge-30655.herokuapp.com/github/rate_limit/)
 This endpoint exposes the rate limit data of the underlying github api key.
 There may be no data, if no requests to the github API have been made by the
 service. Each request updated this record. If no api keys are configured, then
@@ -258,7 +258,7 @@ returns
 }
 ```
 
-#### `/github/tasks/`
+#### [`/github/tasks/`](https://secret-gorge-30655.herokuapp.com/github/tasks/)
 Endpoint for listing available actions and triggering them. A `GET` request
 lists the tasks, a `POST` requests triggers it.
 
@@ -358,7 +358,7 @@ of request quota during its execution it is properly signicaled as an error.
   following can be used: `pipenv run python manage.py runserver` and `pipenv run
   celery -A git_o_matic_9k  worker --beat --loglevel INFO`
 
-### Testing
+## Testing
 
 Assuming that at least the first 5 steps were followed, the test suite can be
 ran with: `pipenv run python manage.py test`
