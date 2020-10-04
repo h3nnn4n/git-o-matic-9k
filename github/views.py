@@ -120,12 +120,6 @@ class TasksView(viewsets.ViewSet):
             return response.Response({'success': 'yes'})
 
         if task_name == 'discovery_scraper':
-            if username == '':
-                return response.Response(
-                    {'success': 'no', 'error': 'Missing username. Provide a valid github username'},
-                    status=406
-                )
-
             tasks.discovery_scraper.delay()
             return response.Response({'success': 'yes'})
 
