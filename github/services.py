@@ -60,7 +60,9 @@ def add_or_update_repository(data):
     defaults['data_source'] = data
     defaults['owner'] = Developer.objects.get(github_id=data['owner']['id'])
 
-    Repository.objects.update_or_create(
+    repository, _ = Repository.objects.update_or_create(
         github_id=data['id'],
         defaults=defaults
     )
+
+    return repository

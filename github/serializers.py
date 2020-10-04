@@ -28,6 +28,7 @@ class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
             'public_repos',
             'followers',
             'following',
+            'starred_repositories',
             'repositories',
         ]
 

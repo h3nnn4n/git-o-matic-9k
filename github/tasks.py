@@ -3,7 +3,7 @@ from celery import shared_task
 from . import services
 from . import github_api
 
-from .models import Developer
+from .models import Developer, Repository
 
 
 @shared_task
@@ -12,6 +12,7 @@ def full_profile_sync(user_name):
     add_or_update_all_user_repositories.delay(user_name)
     add_or_update_user_followers.delay(user_name)
     add_or_update_user_followings.delay(user_name)
+    add_or_update_user_starred_repositories(user_name)
 
 
 @shared_task
@@ -129,3 +130,33 @@ def add_or_update_user_followings(user_name, next_page_link=None):
 
     if 'next' in links.keys():
         add_or_update_user_followings.delay(user_name, links['next'])
+
+
+@shared_task
+def add_or_update_user_starred_repositories(user_name, next_page_link=None):
+    if not github_api.can_make_new_requests():
+        add_or_update_user_starred_repositories.apply_async(
+            args=[user_name, next_page_link],
+            eta=github_api.next_request_time(),
+        )
+
+        return
+
+    starred_repositories, links = github_api.get_user_stared_repositories(user_name, page_link=next_page_link)
+
+    try:
+        developer = Developer.objects.get(login=user_name)
+    except Developer.DoesNotExist:
+        dev_data = github_api.get_user(user_name)
+        developer = services.add_or_update_user(dev_data)
+
+    for starred_repository_data in starred_repositories:
+        repo_data = github_api.get_repository(starred_repository_data['full_name'])
+        add_or_update_user(repo_data['owner']['login'])
+        starred_repository = services.add_or_update_repository(repo_data)
+        developer.starred_repositories.add(starred_repository)
+        # Add here this developer as a stargazer
+        # starred_repository.stargrazers.add(developer)
+
+    if 'next' in links.keys():
+        add_or_update_user_starred_repositories.delay(user_name, links['next'])

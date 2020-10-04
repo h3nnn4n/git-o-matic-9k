@@ -20,7 +20,7 @@ class GetOrUpdateAllUserRepositories(TestCase):
         repository_count_before = Repository.objects.count()
 
         with unittest.mock.patch('celery.celery_always_eager', True, create=True):
-            with test_vcr.use_cassette('get_all_repos_from_h3nnn4n.yaml', record='new_episodes'):
+            with test_vcr.use_cassette('get_all_repos_from_h3nnn4n.yaml', record='none'):
                 tasks.add_or_update_all_user_repositories('h3nnn4n')
 
         self.assertEqual(repository_count_before + 161, Repository.objects.count())
@@ -181,7 +181,7 @@ class AddOrUpdateUserFollowingTaskTest(TestCase):
         with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user('h3nnn4n')
 
-        with test_vcr.use_cassette('get_user_following_h3nnn4n.yaml', record='new_episodes'):
+        with test_vcr.use_cassette('get_user_following_h3nnn4n.yaml', record='none'):
             tasks.add_or_update_user_followings('h3nnn4n')
 
         developer = Developer.objects.get(login='h3nnn4n')
@@ -208,3 +208,21 @@ class AddOrUpdateUserFollowingTaskTest(TestCase):
 
         developer_following = Developer.objects.get(login='andrepiske')
         self.assertEqual(developer_following.followers.count(), 1)
+
+
+class AddOrUpdateUserStarredRepositoriesTest(TestCase):
+    def test_populate_starred_repositories(self):
+        with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
+            tasks.add_or_update_user('h3nnn4n')
+
+        with test_vcr.use_cassette('get_user_stared_repositories_h3nnn4n.yaml', record='new_episodes'):
+            tasks.add_or_update_user_starred_repositories('h3nnn4n')
+
+        developer = Developer.objects.get(login='h3nnn4n')
+
+        self.assertEqual(developer.starred_repositories.count(), 30)
+        starred_repository_names = [
+            repository.full_name for repository in developer.starred_repositories.order_by('full_name')
+        ]
+
+        self.assertIn('danistefanovic/build-your-own-x', starred_repository_names)

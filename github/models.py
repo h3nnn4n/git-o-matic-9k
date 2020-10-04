@@ -25,6 +25,8 @@ class Developer(models.Model):
     followers = models.ManyToManyField('Developer', related_name='reverse_followers')
     following = models.ManyToManyField('Developer', related_name='reverse_following')
 
+    starred_repositories = models.ManyToManyField('Repository', related_name='reverse_starred')
+
     followers_count = models.IntegerField(default=0)
     following_count = models.IntegerField(default=0)
     public_gists = models.IntegerField(default=0)
