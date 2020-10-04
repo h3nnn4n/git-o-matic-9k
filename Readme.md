@@ -1,8 +1,21 @@
 # GIT-O-MATIC-9K
 
 Vroom Vroom. Git-o-matic 9k is a fully automated github user and repository
-discovery system. It can act as a data mirror, with some extra features on top,
-such as fulltext search.
+discovery system. Once the system is seeded with at least one user, an
+automated scraper grows the database by following network connections
+(followers and following).
+
+## Auto throttle
+
+Git-o-matic-9k contains a throttle system, which uses the rate limit data from
+github to prevent running services that will surelly fail. These tasks, instead
+of failing, are automatically rescheduled to when then reset quota is reset.
+Another useful feature is limiting how much of the quota can be used by the
+service, which allows more than one resource intensive application to work on
+the same account without starving critical systems of requests.
+
+The system also supports working unauthenticated on the API. Which grately
+reduces the system throuput, but allows for a quicker setup and testing.
 
 ## Local setup
 
