@@ -19,6 +19,26 @@ unit tests. An action automatically prepares a deploy pr if there is new code
 on master. Finally, if a merge into the `production` branch happens, it gets
 deployed automatically to heroku.
 
+## Periodic tasks
+
+Two periodic tasks are scheduled:
+
+1) The `discovery_scraper`. This runs every hour and fetches new users that are
+following or being followed by some user already in the database. If the
+database is empty then nothing happens.
+
+2) The `heart_beat_task`. It runs every minute and logs a `"ping"` string. This
+can be used to detect that celery and the celery scheduler are running.
+
+This can be changed or new tasks can be added by editing `CELERY_BEAT_SCHEDULE`
+on `settings.py`. See
+https://docs.celeryproject.org/en/stable/userguide/periodic-tasks.html for more
+information.
+
+Another way to schedule tasks is to make a `POST` request to `/github/tasks/`
+with the paramenter `name` set to the task name. So far only the
+`discovery_scraper` task is supported.
+
 ## Auto throttle
 
 Git-o-matic-9k contains a throttle system, which uses the rate limit data from
