@@ -142,6 +142,22 @@ class AddOrUpdateUserFollowersTaskTest(TestCase):
         developer = Developer.objects.get(login='ruanpablom')
 
         self.assertEqual(developer.followers.count(), 10)
-        first_follower = developer.followers.order_by('login').first()
+        followers_name = [
+            follower.login for follower in developer.followers.order_by('login')
+        ]
 
-        self.assertEqual(first_follower.login, 'GlauberrBatista')
+        self.assertEqual(
+            sorted(followers_name),
+            [
+                'GlauberrBatista',
+                'Kronossaurus',
+                'Mano21',
+                'brunats',
+                'conejo11',
+                'h31nr1ch',
+                'lucasaloisio',
+                'markx3',
+                'rafaelcgs10',
+                'wesklei'
+            ]
+        )
