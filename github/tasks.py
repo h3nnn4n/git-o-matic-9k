@@ -78,7 +78,11 @@ def add_or_update_user_followers(user_name, next_page_link=None):
 
     followers_data, links = github_api.get_user_followers(user_name, page_link=next_page_link)
 
-    developer = Developer.objects.get(login=user_name)
+    try:
+        developer = Developer.objects.get(login=user_name)
+    except Developer.DoesNotExist:
+        dev_data = github_api.get_user(user_name)
+        developer = services.add_or_update_user(dev_data)
 
     if developer.followers_count == developer.followers.count() and next_page_link is None:
         return
