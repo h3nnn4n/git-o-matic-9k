@@ -94,6 +94,12 @@ returns
 
 Passing an developer/user `uuid` to this endpoint fetches a single user. Example:
 
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/4f8e76e8-c068-4f21-a36d-a46c4d221c1d/
+```
+
+returns
+
 ```json
 {
     "github_id": "7543345",
@@ -110,20 +116,20 @@ Passing an developer/user `uuid` to this endpoint fetches a single user. Example
     "public_gists": 16,
     "public_repos": 164,
     "followers": [
-        "http://127.0.0.1:8000/github/developers/b136112b-3ff0-47d3-bbaa-01471666fbe4/",
-        "..."
+        "https://secret-gorge-30655.herokuapp.com/github/developers/bdea3017-63ce-444c-b758-d3204122f7c5/",
+        "...",
     ],
     "following": [
-        "http://127.0.0.1:8000/github/developers/6bd3c1ef-f820-41ed-b937-ff026cb45c4c/",
-        "..."
+        "https://secret-gorge-30655.herokuapp.com/github/developers/8d909acc-6419-4c69-a24c-69470b28d35f/",
+        "...",
     ],
     "starred_repositories": [
-        "http://127.0.0.1:8000/github/repositories/21ffcb9d-136c-4def-944f-73716e63b00e/",
-        "..."
+        "https://secret-gorge-30655.herokuapp.com/github/repositories/89fdc037-b4f8-47ce-a7fa-2f2dc0713524/",
+        "...",
     ],
     "repositories": [
-        "http://127.0.0.1:8000/github/repositories/e9d7a3f4-bd8c-4c32-bc7a-7442a61aecb0/",
-        "..."
+        "https://secret-gorge-30655.herokuapp.com/github/repositories/39f44062-1d70-4d6e-9479-cd2439adf03b/",
+        "...",
     ]
 }
 ```
@@ -132,26 +138,33 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-2) `/github/repositories/`: This endpoint exposes a list of all repositories
-(that were synced). All relations are hyperlinked. For example:
+#### `/github/repositories/`
+This endpoint exposes a list of all repositories (that were synced). All
+relations are hyperlinked. For example:
+
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/repositories/
+```
+
+returns
 
 ```json
 {
-    "count": 982,
-    "next": "http://127.0.0.1:8000/github/repositories/?page=4",
-    "previous": "http://127.0.0.1:8000/github/repositories/?page=2",
+    "count": 1191,
+    "next": "https://secret-gorge-30655.herokuapp.com/github/repositories/?page=2",
+    "previous": null,
     "results": [
         {
-            "owner": "http://127.0.0.1:8000/github/developers/6222c4b4-d70e-4c70-ad7b-ee79685dac86/",
-            "github_id": "300252307",
-            "owner_github_id": "9753063",
-            "name": "papers",
-            "full_name": "h31nr1ch/papers",
-            "description": null,
-            "homepage": null,
-            "language": null,
-            "created_at": "2020-10-01T11:19:43Z",
-            "updated_at": "2020-10-01T12:13:55Z",
+            "owner": "https://secret-gorge-30655.herokuapp.com/github/developers/153b11f4-d0f8-4f78-a652-e13521d09436/",
+            "github_id": "299566089",
+            "owner_github_id": "15267120",
+            "name": "MazeGenerator",
+            "full_name": "89netraM/MazeGenerator",
+            "description": "A collection of algorithms for generating mazes",
+            "homepage": "",
+            "language": "Rust",
+            "created_at": "2020-09-29T09:20:44Z",
+            "updated_at": "2020-10-04T10:20:43Z",
             "has_downloads": true,
             "has_issues": true,
             "has_pages": false,
@@ -160,46 +173,54 @@ page.
             "private": false,
             "archived": false,
             "disabled": false,
-            "stargazers": ["..."],
-            "stargazers_count": 0,
+            "stargazers": [
+                "https://secret-gorge-30655.herokuapp.com/github/developers/87eee21b-09a7-4fac-9c24-79a1bbf22796/",
+                "..."
+            ],
+            "stargazers_count": 52,
             "subscribers_count": 1,
-            "watchers_count": 0,
+            "watchers_count": 52,
             "open_issues_count": 0
         },
-    ]
 }
 ```
 
-It is possible to fetch data about a single `uuid` by passing it to the endpoint.
+It is possible to fetch data about a single `uuid` by passing it to the endpoint. For example:
+
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/repositories/d1a4bbb5-e6ad-426a-8303-8f132cb6fcf5/
+```
+
+returns
 
 ```json
 {
-    "owner": "http://127.0.0.1:8000/github/developers/f895512a-4a85-4784-aac8-2dc1fd4781a7/",
-    "github_id": "37652385",
-    "owner_github_id": "20063",
-    "name": "cargo-edit",
-    "full_name": "killercup/cargo-edit",
-    "description": "A utility for managing cargo dependencies from the command line.",
-    "homepage": "http://killercup.github.io/cargo-edit/",
-    "language": "Rust",
-    "created_at": "2015-06-18T10:12:57Z",
-    "updated_at": "2020-10-04T16:09:24Z",
+    "owner": "https://secret-gorge-30655.herokuapp.com/github/developers/4f8e76e8-c068-4f21-a36d-a46c4d221c1d/",
+    "github_id": "76605426",
+    "owner_github_id": "7543345",
+    "name": "garapa",
+    "full_name": "h3nnn4n/garapa",
+    "description": "A gameboy emulator, written in C with an optional tetris AI and Julia API",
+    "homepage": "",
+    "language": "C",
+    "created_at": "2016-12-15T23:52:01Z",
+    "updated_at": "2019-04-21T22:41:47Z",
     "has_downloads": true,
     "has_issues": true,
-    "has_pages": true,
+    "has_pages": false,
     "has_projects": true,
-    "has_wiki": false,
+    "has_wiki": true,
     "private": false,
     "archived": false,
     "disabled": false,
     "stargazers": [
-        "http://127.0.0.1:8000/github/developers/d2616208-be58-4a4d-ab62-b5d487588101/",
+        "https://secret-gorge-30655.herokuapp.com/github/developers/5bd1a553-5059-48bc-b055-bfe04e98cd61/",
         "..."
     ],
-    "stargazers_count": 1421,
-    "subscribers_count": 19,
-    "watchers_count": 1421,
-    "open_issues_count": 50
+    "stargazers_count": 12,
+    "subscribers_count": 4,
+    "watchers_count": 12,
+    "open_issues_count": 0
 }
 ```
 
@@ -207,12 +228,18 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-3) `/github/rate_limit/`: This endpoint exposes the rate limit data of the
-underlying github api key. There may be no data, if no requests to the github
-API have been made by the service. Each request updated this record. If no api
-keys are configured, then this record will reflect the rate limits for an
-unauthenticated user. The record, if it exists, will always have id `1`.
-Example:
+#### `/github/rate_limit/`
+This endpoint exposes the rate limit data of the underlying github api key.
+There may be no data, if no requests to the github API have been made by the
+service. Each request updated this record. If no api keys are configured, then
+this record will reflect the rate limits for an unauthenticated user. The
+record, if it exists, will always have id `1`.  Example:
+
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/rate_limit/
+```
+
+returns
 
 ```json
 {
@@ -221,7 +248,7 @@ Example:
     "previous": null,
     "results": [
         {
-            "url": "http://127.0.0.1:8000/github/rate_limit/1/",
+            "url": "https://secret-gorge-30655.herokuapp.com/github/rate_limit/1/",
             "rate_limit": 5000,
             "rate_remaining": 1749,
             "rate_reset_raw": 1601853380,
@@ -231,8 +258,9 @@ Example:
 }
 ```
 
-4) `/github/tasks/`: Endpoint for listing available actions and triggering
-them. A `GET` request lists the tasks, a `POST` requests triggers it.
+#### `/github/tasks/`
+Endpoint for listing available actions and triggering them. A `GET` request
+lists the tasks, a `POST` requests triggers it.
 
 Acceptable actions are:
 
@@ -256,6 +284,13 @@ of date and runs a full sync.
 Make a post to this endpoint to trigger the action. e.g. a post with
 `name=full_repository_sync`, `username=h3nnn4n` and `repo_name=garapa`
 will fetch and sync the repository `h3nnn4n/garapa` asyncronously.
+
+On a successfull `POST` request a response with code 200 and message
+`{'success': 'yes'}` will be sent.
+
+In case of failure, a response with code 406 will be sent with `'success': 'no'` and
+an appropriate error message. For example:
+`{'success': 'no', 'error': 'Missing repo_name. Provide a valid repository name'}`
 
 ## Periodic tasks
 
