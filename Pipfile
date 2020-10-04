@@ -8,7 +8,6 @@ pipenv = "*"
 pylint = "*"
 ipdb = "*" # HACK: https://github.com/pypa/pipenv/issues/4476
 vcrpy = "*"
-drf-yasg = "*"
 
 [packages]
 djangorestframework = "==3.11.2" # https://github.com/axnsan12/drf-yasg/issues/641
@@ -21,6 +20,7 @@ psycopg2 = "*"
 links-from-link-header = "*"
 gunicorn = "*"
 django-heroku = "*"
+drf-yasg = "*"
 
 [requires]
 python_version = "3.7"
