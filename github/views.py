@@ -4,7 +4,7 @@ from rest_framework import permissions
 
 from .models import Developer, Repository, RateLimit
 from .serializers import DeveloperSerializer, RepositorySerializer, RateLimitSerializer
-from .tasks import add_or_update_user, add_or_update_all_user_repositories, add_or_update_repository
+from . import tasks
 
 
 class DeveloperViewSet(viewsets.ReadOnlyModelViewSet):
@@ -82,8 +82,7 @@ def full_developer_sync(request, username):
     else:
         print('not authenticated user')
 
-    add_or_update_user.delay(username)
-    add_or_update_all_user_repositories.delay(username)
+    tasks.full_profile_sync.delay(username)
 
     return HttpResponse('ok')
 
@@ -95,6 +94,6 @@ def repository_sync(request, username, repository):
         print('not authenticated user')
 
     repo_full_name = '/'.join([username, repository])
-    add_or_update_repository.delay(repo_full_name)
+    tasks.add_or_update_repository.delay(repo_full_name, populate_stargazers=True)
 
     return HttpResponse('ok')
