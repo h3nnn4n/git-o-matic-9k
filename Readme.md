@@ -32,8 +32,8 @@ The code is also full documented with doc strings.
 
 The root endpoint plus four model endpoints make part of the git-o-matic-9k API:
 
-0) [`/github/`](https://secret-gorge-30655.herokuapp.com/github/): The api
-root. It lists and hyperlinks all other endpoints. For example:
+#### [`/github/`](https://secret-gorge-30655.herokuapp.com/github/)
+The api root. It lists and hyperlinks all other endpoints. For example:
 
 ```bash
 curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/\?page\=42
@@ -50,8 +50,7 @@ returns
 }
 ```
 
-1)
-[`/github/developers/`](https://secret-gorge-30655.herokuapp.com/github/developers/):
+### [`/github/developers/`](https://secret-gorge-30655.herokuapp.com/github/developers/)
 This endpoint exposes a list of all developers (that were synced). All
 relations are hyperlinked. Supports pagination. For example:
 
