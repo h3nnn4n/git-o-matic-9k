@@ -174,3 +174,37 @@ class AddOrUpdateUserFollowersTaskTest(TestCase):
 
         developer_following = Developer.objects.get(login='GlauberrBatista')
         self.assertEqual(developer_following.following.count(), 1)
+
+
+class AddOrUpdateUserFollowingTaskTest(TestCase):
+    def test_populate_following(self):
+        with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
+            tasks.add_or_update_user('h3nnn4n')
+
+        with test_vcr.use_cassette('get_user_following_h3nnn4n.yaml', record='new_episodes'):
+            tasks.add_or_update_user_followings('h3nnn4n')
+
+        developer = Developer.objects.get(login='h3nnn4n')
+
+        self.assertEqual(developer.following.count(), 4)
+        following_names = [
+            following.login for following in developer.following.order_by('login')
+        ]
+
+        self.assertEqual(
+            sorted(following_names),
+            ['andrepiske', 'andreynering', 'khskarl', 'rafaelcgs10']
+        )
+
+    def test_populate_followers_from_following(self):
+        """
+        Test that if Y is follows Y, then Y must be followed by X
+        """
+        with test_vcr.use_cassette('get_user_h3nnn4n.yaml', record='none'):
+            tasks.add_or_update_user('h3nnn4n')
+
+        with test_vcr.use_cassette('get_user_following_h3nnn4n.yaml', record='none'):
+            tasks.add_or_update_user_followings('h3nnn4n')
+
+        developer_following = Developer.objects.get(login='andrepiske')
+        self.assertEqual(developer_following.followers.count(), 1)

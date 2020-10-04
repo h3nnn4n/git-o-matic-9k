@@ -11,6 +11,7 @@ def full_profile_sync(user_name):
     add_or_update_user.delay(user_name)
     add_or_update_all_user_repositories.delay(user_name)
     add_or_update_user_followers.delay(user_name)
+    add_or_update_user_followings.delay(user_name)
 
 
 @shared_task
@@ -97,3 +98,34 @@ def add_or_update_user_followers(user_name, next_page_link=None):
 
     if 'next' in links.keys():
         add_or_update_user_followers.delay(user_name, links['next'])
+
+
+@shared_task
+def add_or_update_user_followings(user_name, next_page_link=None):
+    if not github_api.can_make_new_requests():
+        add_or_update_user_followings.apply_async(
+            args=[user_name, next_page_link],
+            eta=github_api.next_request_time(),
+        )
+
+        return
+
+    followeds_data, links = github_api.get_user_followings(user_name, page_link=next_page_link)
+
+    try:
+        developer = Developer.objects.get(login=user_name)
+    except Developer.DoesNotExist:
+        dev_data = github_api.get_user(user_name)
+        developer = services.add_or_update_user(dev_data)
+
+    if developer.following_count == developer.following.count() and next_page_link is None:
+        return
+
+    for followed_data in followeds_data:
+        dev_data = github_api.get_user(followed_data['login'])
+        followed_developer = services.add_or_update_user(dev_data)
+        developer.following.add(followed_developer)
+        followed_developer.followers.add(developer)
+
+    if 'next' in links.keys():
+        add_or_update_user_followings.delay(user_name, links['next'])
