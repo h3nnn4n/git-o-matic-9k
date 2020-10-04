@@ -149,8 +149,7 @@ class TasksView(viewsets.ViewSet):
 
         3) discovery_scraper: Triggers the discovery scrapper. This by default
         picks 5 users where the following, followers or repository count if out
-        of date and runs a full sync. Requires `username` to be set with a
-        valid github username.
+        of date and runs a full sync.
 
         Make a post to this endpoint to trigger the action. e.g. a post with
         `name=full_repository_sync`, `username=h3nnn4n` and `repo_name=garapa`
