@@ -37,7 +37,7 @@ class Repository(models.Model):
         Represents a github repository
     """
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.ForeignKey(Developer, on_delete=models.CASCADE)
+    owner = models.ForeignKey(Developer, on_delete=models.CASCADE, related_name='repositories')
     github_id = models.CharField(max_length=256)
     owner_github_id = models.CharField(max_length=256)
     name = models.CharField(max_length=256)
