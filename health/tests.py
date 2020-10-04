@@ -3,6 +3,9 @@ from django.urls import reverse
 
 
 class HealthViewTests(TestCase):
+    """
+    Tests the health endpoint
+    """
     def test_ok(self):
         """
         Simply test that the view returns 'ok'
