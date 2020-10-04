@@ -180,8 +180,8 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'github.tasks.discovery_scraper',
         'schedule': crontab(hour='*'),
     },
-    'ping_task': {
-        'task': 'github.tasks.ping_task',
+    'heart_beat_task': {
+        'task': 'github.tasks.heart_beat_task',
         'schedule': crontab(minute='*/1'),
     },
 }
