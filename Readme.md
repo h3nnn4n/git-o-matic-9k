@@ -30,48 +30,65 @@ The code is also full documented with doc strings.
 
 ### Endpoints
 
-Four endpoints make part of the git-o-matic-9k API:
+The root endpoint plus four model endpoints make part of the git-o-matic-9k API:
 
-1) `/github/developers/`: This endpoint exposes a list of all developers (that
-were synced). All relations are hyperlinked. For example:
+0) [`/github/`](https://secret-gorge-30655.herokuapp.com/github/): The api
+root. It lists and hyperlinks all other endpoints. For example:
+
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/\?page\=42
+```
+
+returns
 
 ```json
 {
-    "count": 1,
-    "next": null,
-    "previous": null,
+    "developers": "https://secret-gorge-30655.herokuapp.com/github/developers/",
+    "repositories": "https://secret-gorge-30655.herokuapp.com/github/repositories/",
+    "rate_limit": "https://secret-gorge-30655.herokuapp.com/github/rate_limit/",
+    "tasks": "https://secret-gorge-30655.herokuapp.com/github/tasks/"
+}
+```
+
+1)
+[`/github/developers/`](https://secret-gorge-30655.herokuapp.com/github/developers/):
+This endpoint exposes a list of all developers (that were synced). All
+relations are hyperlinked. Supports pagination. For example:
+
+```bash
+curl -H 'Accept: application/json; indent=4' -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/developers/\?page\=42
+```
+
+returns
+
+```json
+{
+    "count": 1348,
+    "next": "https://secret-gorge-30655.herokuapp.com/github/developers/?page=43",
+    "previous": "https://secret-gorge-30655.herokuapp.com/github/developers/?page=41",
     "results": [
         {
-            "github_id": "7543345",
-            "login": "h3nnn4n",
-            "name": "Renan S Silva",
-            "location": "Brazil",
-            "bio": "One Renan to code it all. ",
-            "company": "JobScore",
-            "email": "uber.renan@gmail.com",
-            "created_at": "2014-05-10T15:45:24Z",
-            "updated_at": "2020-10-02T23:44:43Z",
-            "followers_count": 62,
-            "following_count": 4,
-            "public_gists": 16,
-            "public_repos": 164,
-            "followers": [
-                "http://127.0.0.1:8000/github/developers/b136112b-3ff0-47d3-bbaa-01471666fbe4/",
-                "..."
-            ],
-            "following": [
-                "http://127.0.0.1:8000/github/developers/6bd3c1ef-f820-41ed-b937-ff026cb45c4c/",
-                "..."
-            ],
-            "starred_repositories": [
-                "http://127.0.0.1:8000/github/repositories/21ffcb9d-136c-4def-944f-73716e63b00e/",
-                "..."
-            ],
+            "github_id": "14107257",
+            "login": "nordcloud",
+            "name": "Nordcloud Engineering",
+            "location": "Helsinki, London, Munich, Oslo, Poznań, Stockholm, Malmo, Copenhagen",
+            "bio": "Nordcloud Engineering and Open Source. ",
+            "company": null,
+            "email": "info@nordcloud.com",
+            "created_at": "2015-09-03T09:31:50Z",
+            "updated_at": "2020-09-01T19:36:57Z",
+            "followers_count": 0,
+            "following_count": 0,
+            "public_gists": 0,
+            "public_repos": 44,
+            "followers": ["..."],
+            "following": ["..."],
+            "starred_repositories": ["..."],
             "repositories": [
-                "http://127.0.0.1:8000/github/repositories/e9d7a3f4-bd8c-4c32-bc7a-7442a61aecb0/",
+                "https://secret-gorge-30655.herokuapp.com/github/repositories/6049bd29-5039-421c-8bb8-1464b0c97a06/",
                 "..."
             ]
-        }
+        },
     ]
 }
 ```
