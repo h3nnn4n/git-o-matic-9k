@@ -2,8 +2,8 @@ from django.http import HttpResponse
 from rest_framework import viewsets
 from rest_framework import permissions
 
-from .models import Developer, Repository
-from .serializers import DeveloperSerializer, RepositorySerializer
+from .models import Developer, Repository, RateLimit
+from .serializers import DeveloperSerializer, RepositorySerializer, RateLimitSerializer
 from .tasks import add_or_update_user, add_or_update_all_user_repositories, add_or_update_repository
 
 
@@ -58,6 +58,21 @@ class RepositoryViewSet(viewsets.ReadOnlyModelViewSet):
         'subscribers_count': ['exact', 'lte', 'gte'],
         'watchers_count': ['exact', 'lte', 'gte'],
         'open_issues_count': ['exact', 'lte', 'gte'],
+    }
+
+
+class RateLimitViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    API endpoint for the github rate limiting quotas
+    """
+    queryset = RateLimit.objects.all()
+    serializer_class = RateLimitSerializer
+    permission_classes = [permissions.IsAuthenticated]
+    filterset_fields = {
+        'rate_limit': ['exact', 'lte', 'gte'],
+        'rate_remaining': ['exact', 'lte', 'gte'],
+        'rate_reset': ['exact', 'lte', 'gte'],
+        'rate_reset_raw': ['exact', 'lte', 'gte'],
     }
 
 
