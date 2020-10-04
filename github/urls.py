@@ -6,7 +6,7 @@ from rest_framework import routers, permissions
 
 from . import views
 
-# pylint: disable: invalid-name
+# pylint: disable=invalid-name
 schema_view = get_schema_view(
    openapi.Info(
       title="Snippets API",

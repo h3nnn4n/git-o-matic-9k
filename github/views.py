@@ -9,7 +9,7 @@ from . import tasks
 
 class DeveloperViewSet(viewsets.ReadOnlyModelViewSet):
     """
-    API endpoint for developers
+    API endpoint for developers (github users)
     """
     queryset = Developer.objects.all().order_by('-created_at')
     serializer_class = DeveloperSerializer
@@ -77,6 +77,11 @@ class RateLimitViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 def full_developer_sync(request, username):
+    """
+    Endpoint for triggering a full sync of a developer. This updates the
+    developer record, the followers and following lists, starred repositories,
+    fetches all of the developer's repositories and its stargazer.
+    """
     if request.user.is_authenticated:
         print('authenticated user')
     else:
@@ -88,6 +93,11 @@ def full_developer_sync(request, username):
 
 
 def repository_sync(request, username, repository):
+    """
+    Endpoint for triggering a full sync of a repository. This fetches and
+    updates the repository and its owner. Stargazers are also created and
+    updated.
+    """
     if request.user.is_authenticated:
         print('authenticated user')
     else:
@@ -100,6 +110,11 @@ def repository_sync(request, username, repository):
 
 
 def discovery_scraper(request):
+    """
+    Triggers the discovery scrapper. This by default picks 5 users where the
+    following, followers or repository count if out of date and runs a full
+    sync.
+    """
     if not request.user.is_authenticated:
         return Http404()
 

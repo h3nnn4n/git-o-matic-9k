@@ -11,15 +11,25 @@ from .models import RateLimit
 
 
 class HttpErrorExeption(RuntimeError):
-    pass
+    """
+    Raised when any error is found. Triggered by a response status code equal
+    or greater than 400.
+    """
 
 
 def check_for_errors(response):
+    """
+    Takes an response and checks if there is any http error. Raises HttpErrorExeption.
+    """
     if response.status_code >= 400:
         raise HttpErrorExeption(response.content)
 
 
 def get_auth():
+    """
+    Reads the setting file and sets the github api credentials. If not found,
+    None is returned and the system runs unauthenticated.
+    """
     auth = (settings.GITHUB_API_USER, settings.GITHUB_API_KEY)
 
     if all(auth):
@@ -29,6 +39,10 @@ def get_auth():
 
 
 def rate_limit_update(headers):
+    """
+    Updates the RateLimit record. triggedred if the remaing api calls count
+    decreased or if the reset time increased (this signals a rate limit reset).
+    """
     limit = int(headers['X-RateLimit-Limit'])
     remaining = int(headers['X-RateLimit-Remaining'])
     reset = int(headers['X-RateLimit-Reset'])
@@ -56,11 +70,20 @@ def rate_limit_update(headers):
 
 
 def next_request_time():
+    """
+    Returns when the next request can be made, based on the rate api data from
+    github's api. A fudge factor of 1~60 seconds is added to prevent the system
+    from being bombarded with too many tasks at once.
+    """
     ratelimit = RateLimit.objects.get(pk=1)
     return ratelimit.rate_reset + timedelta(seconds=randint(1, 60))
 
 
 def can_make_new_requests():
+    """
+    Check if it is possible to make new requests. This compares the RateLimit
+    remaining data agaisnt the RATE_LIMIT_STOP_THRESHOLD setting
+    """
     try:
         ratelimit = RateLimit.objects.get(pk=1)
         return ratelimit.can_make_new_requests()
@@ -69,6 +92,10 @@ def can_make_new_requests():
 
 
 def get_user(user_name):
+    """
+    Fetches a github developer (user). Receives an username/login. E.g.
+    'h3nnn4n'
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -83,6 +110,10 @@ def get_user(user_name):
 
 
 def get_repository(repo_name):
+    """
+    Fetches a github repository. Receives a repository full name. E.g.
+    'h3nnn4n/garapa'
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -97,6 +128,11 @@ def get_repository(repo_name):
 
 
 def list_repositories(user_name, page_link=None):
+    """
+    Lists a developer's repositories. Receives an username/login. E.g.
+    'h3nnn4n'. This is paginated. The first query returns a 'next' link, which
+    should be passed back to this function via the `page_link` parameter.
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -116,6 +152,11 @@ def list_repositories(user_name, page_link=None):
 
 
 def get_user_followers(user_name, page_link=None):
+    """
+    Lists a developer's followers list. Receives an username/login. E.g.
+    'h3nnn4n'. This is paginated. The first query returns a 'next' link, which
+    should be passed back to this function via the `page_link` parameter.
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -135,6 +176,11 @@ def get_user_followers(user_name, page_link=None):
 
 
 def get_user_followings(user_name, page_link=None):
+    """
+    Lists a developer's following list. Receives an username/login. E.g.
+    'h3nnn4n'. This is paginated. The first query returns a 'next' link, which
+    should be passed back to this function via the `page_link` parameter.
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -154,6 +200,11 @@ def get_user_followings(user_name, page_link=None):
 
 
 def get_user_stared_repositories(user_name, page_link=None):
+    """
+    Lists a developer's starred repositories. Receives an username/login. E.g.
+    'h3nnn4n'. This is paginated. The first query returns a 'next' link, which
+    should be passed back to this function via the `page_link` parameter.
+    """
     auth = get_auth()
 
     result = requests.get(
@@ -173,6 +224,11 @@ def get_user_stared_repositories(user_name, page_link=None):
 
 
 def get_repository_stargazers(repo_name, page_link=None):
+    """
+    Lists a repository stargazers. Receives a repository full name. E.g.
+    'h3nnn4n/garapa'. This is paginated. The first query returns a 'next' link,
+    which should be passed back to this function via the `page_link` parameter.
+    """
     auth = get_auth()
 
     result = requests.get(
