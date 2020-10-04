@@ -8,6 +8,14 @@ from .models import Developer, Repository
 
 @shared_task
 def discovery_scraper(count=5):
+    """
+    Finds up to five users where some of the data is out of date or missing.
+    The number of users to be updated can be changed with the `count`
+    parameter. An user is selected if the number of records reported by github
+    differs from the count in the database for any of the following
+    fields/relations: followers, following, repositories. This triggers the
+    `full_profile_sync` task.
+    """
     enqueued = 0
 
     for developer in Developer.objects.all():
@@ -27,6 +35,10 @@ def discovery_scraper(count=5):
 
 @shared_task
 def full_profile_sync(user_name):
+    """
+    Sync all data for a given username/login. This service is very granular and
+    it spawns several other tasks.
+    """
     add_or_update_user.delay(user_name)
     add_or_update_all_user_repositories.delay(user_name, populate_stargazers=True)
     add_or_update_user_followers.delay(user_name)
@@ -36,6 +48,9 @@ def full_profile_sync(user_name):
 
 @shared_task
 def add_or_update_user(user_name):
+    """
+    Adds or update an user specified by its username/login.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_user.apply_async(
             args=[user_name],
@@ -51,6 +66,13 @@ def add_or_update_user(user_name):
 
 @shared_task
 def add_or_update_repository(repo_name, populate_stargazers=False):
+    """
+    Adds or update a repository specified by its full name. E.g.
+    'h3nnn4n/garapa'. If the owner user doesnt exist, it is created too.
+    The optional parameter `populate_stargazers` triggers populating
+    the stargazers relation with the respective users. This can be very time
+    consuming for some popular repositories and can easily take hours to sync.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_repository.apply_async(
             args=[repo_name],
@@ -75,6 +97,13 @@ def add_or_update_repository(repo_name, populate_stargazers=False):
 
 @shared_task
 def add_or_update_all_user_repositories(user_name, next_page_link=None, populate_stargazers=False):
+    """
+    Syncs all repositories for an user. If the owner user doesnt exist, it is
+    created too.  The optional parameter `populate_stargazers` triggers
+    populating the stargazers relation with the respective users. This can be
+    very time consuming for some popular repositories and can easily take hours
+    to sync.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_all_user_repositories.apply_async(
             args=[user_name, next_page_link],
@@ -94,6 +123,11 @@ def add_or_update_all_user_repositories(user_name, next_page_link=None, populate
 
 @shared_task
 def add_or_update_user_followers(user_name, next_page_link=None):
+    """
+    Fetches, updates and creates all followers of a given user. If the user
+    itself doesnt exist it is created. The task returns without changing any
+    data if the followers count on disk matches the last count from github.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_user_followers.apply_async(
             args=[user_name, next_page_link],
@@ -125,6 +159,11 @@ def add_or_update_user_followers(user_name, next_page_link=None):
 
 @shared_task
 def add_or_update_user_followings(user_name, next_page_link=None):
+    """
+    Fetches, updates and creates all following users of a given user. If the
+    user itself doesnt exist it is created. The task returns without changing
+    any data if the following count on disk matches the last count from github.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_user_followings.apply_async(
             args=[user_name, next_page_link],
@@ -156,6 +195,13 @@ def add_or_update_user_followings(user_name, next_page_link=None):
 
 @shared_task
 def add_or_update_user_starred_repositories(user_name, next_page_link=None):
+    """
+    Fetches, updates and creates all repositories starred by a given user. If
+    the user itself doesnt exist it is created. The repository owner users are
+    also created if they doesnt exist. If they do, they get updated. The task
+    returns without changing any data if the repository count on disk matches
+    the last count from github.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_user_starred_repositories.apply_async(
             args=[user_name, next_page_link],
@@ -185,6 +231,12 @@ def add_or_update_user_starred_repositories(user_name, next_page_link=None):
 
 @shared_task
 def add_or_update_repository_stargazers(repo_name, next_page_link=None):
+    """
+    Fetches, updates and creates all stargazer users for a given repository. If
+    the repository itself doesnt exist it is created. Same for the owner user.
+    The task returns without changing any data if the stargazer count on disk
+    matches the last count from github.
+    """
     if not github_api.can_make_new_requests():
         add_or_update_repository_stargazers.apply_async(
             args=[repo_name, next_page_link],

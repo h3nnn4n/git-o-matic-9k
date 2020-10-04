@@ -4,7 +4,10 @@ from .models import Developer, Repository, RateLimit
 
 
 class RepositorySerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
+    """
+    Serializer for a Repository
+    """
+    class Meta: # pylint: disable=missing-class-docstring
         model = Repository
         fields = [
             'owner',
@@ -37,7 +40,10 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
 
 
 class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
+    """
+    Serializer for a Developer
+    """
+    class Meta: # pylint: disable=missing-class-docstring
         model = Developer
         fields = [
             'github_id',
@@ -61,6 +67,9 @@ class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class RateLimitSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
+    """
+    Serializer for the RateLimit record
+    """
+    class Meta: # pylint: disable=missing-class-docstring
         model = RateLimit
         fields = '__all__'
