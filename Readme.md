@@ -19,6 +19,15 @@ unit tests. An action automatically prepares a deploy pr if there is new code
 on master. Finally, if a merge into the `production` branch happens, it gets
 deployed automatically to heroku.
 
+## Documentation
+
+The API is in fully explorable on a browser by using the `djangorestframework`.
+Additionally, a `swagger` and `redoc` documentations are available under
+[`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
+and [`/github/redoc/`](https://secret-gorge-30655.herokuapp.com/github/redoc/).
+
+The code is also full documented with doc strings.
+
 ## Periodic tasks
 
 Two periodic tasks are scheduled:
