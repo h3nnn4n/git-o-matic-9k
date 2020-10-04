@@ -7,6 +7,16 @@ from .models import Developer, Repository
 
 
 @shared_task
+def heart_beat_task():
+    """
+    A dummy task that logs a 'ping' string, to signal that celery is up and
+    running (and the scheduler too!)
+    """
+    print('ping')
+    return 'ping'
+
+
+@shared_task
 def discovery_scraper(count=5):
     """
     Finds up to five users where some of the data is out of date or missing.
