@@ -176,12 +176,12 @@ RATE_LIMIT_STOP_THRESHOLD = 25
 
 # Celery scheduled tasks settings
 CELERY_BEAT_SCHEDULE = {
-    'discovery_scraper': {
-        'task': 'github.tasks.discovery_scraper',
-        'schedule': crontab(hour='*'),
-    },
-    'heart_beat_task': {
-        'task': 'github.tasks.heart_beat_task',
-        'schedule': crontab(minute='*/1'),
-    },
+    # 'discovery_scraper': {
+        # 'task': 'github.tasks.discovery_scraper',
+        # 'schedule': crontab(hour='*'),
+    # },
+    # 'heart_beat_task': {
+        # 'task': 'github.tasks.heart_beat_task',
+        # 'schedule': crontab(minute='*/1'),
+    # },
 }
