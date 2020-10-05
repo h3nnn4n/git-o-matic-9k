@@ -11,6 +11,8 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
     class Meta: # pylint: disable=missing-class-docstring
         model = Repository
         fields = [
+            'id',
+            'url',
             'owner',
             'github_id',
             'owner_github_id',
@@ -47,6 +49,8 @@ class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
     class Meta: # pylint: disable=missing-class-docstring
         model = Developer
         fields = [
+            'id',
+            'url',
             'github_id',
             'login',
             'name',

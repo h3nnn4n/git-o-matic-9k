@@ -28,11 +28,11 @@ and [`/github/redoc/`](https://secret-gorge-30655.herokuapp.com/github/redoc/).
 
 The code is also full documented with doc strings.
 
-### Endpoints
+## Endpoints
 
 The root endpoint plus four model endpoints make part of the git-o-matic-9k API:
 
-#### [`/github/`](https://secret-gorge-30655.herokuapp.com/github/)
+### Root: [`/github/`](https://secret-gorge-30655.herokuapp.com/github/)
 The api root. It lists and hyperlinks all other endpoints. For example:
 
 ```bash
@@ -50,7 +50,7 @@ returns
 }
 ```
 
-### [`/github/developers/`](https://secret-gorge-30655.herokuapp.com/github/developers/)
+### Developers: [`/github/developers/`](https://secret-gorge-30655.herokuapp.com/github/developers/)
 This endpoint exposes a list of all developers (that were synced). All
 relations are hyperlinked. Supports pagination. For example:
 
@@ -138,7 +138,7 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-#### [`/github/repositories/`](https://secret-gorge-30655.herokuapp.com/github/repositories/)
+### Repositories: [`/github/repositories/`](https://secret-gorge-30655.herokuapp.com/github/repositories/)
 This endpoint exposes a list of all repositories (that were synced). All
 relations are hyperlinked. For example:
 
@@ -181,7 +181,8 @@ returns
             "subscribers_count": 1,
             "watchers_count": 52,
             "open_issues_count": 0
-        },
+        }
+    ]
 }
 ```
 
@@ -228,7 +229,7 @@ Filters are also supported and fully docummented at the
 [`/github/swagger`](https://secret-gorge-30655.herokuapp.com/github/swagger/)
 page.
 
-#### [`/github/rate_limit/`](https://secret-gorge-30655.herokuapp.com/github/rate_limit/)
+### Rate Limiting: [`/github/rate_limit/`](https://secret-gorge-30655.herokuapp.com/github/rate_limit/)
 This endpoint exposes the rate limit data of the underlying github api key.
 There may be no data, if no requests to the github API have been made by the
 service. Each request updated this record. If no api keys are configured, then
@@ -258,7 +259,7 @@ returns
 }
 ```
 
-#### [`/github/tasks/`](https://secret-gorge-30655.herokuapp.com/github/tasks/)
+### Tasks: [`/github/tasks/`](https://secret-gorge-30655.herokuapp.com/github/tasks/)
 Endpoint for listing available actions and triggering them. A `GET` request
 lists the tasks, a `POST` requests triggers it.
 
