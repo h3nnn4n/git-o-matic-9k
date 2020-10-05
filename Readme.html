@@ -209,7 +209,7 @@
 </ul>
 <ol start="4" type="1">
 <li>Ensure that <a href="https://www.rabbitmq.com/"><code>rabbitmq</code></a> and <a href="https://www.postgresql.org/"><code>postgresql</code></a> are installed. Optionally install either <a href="https://github.com/mattn/goreman"><code>goreman</code></a>, <a href="https://github.com/theforeman/foreman"><code>foreman</code></a>, or an equivalent.</li>
-<li>Create a database for the project with <code>createdb git_o_matic_9k</code></li>
+<li>Create a database for the project with <code>createdb git_o_matic_9k</code>. To load a prepopulated database, run <code>pg_restore -h localhost -U postgres   --dbname=git_o_matic_9k demo_db.dump</code>. Otherwise, run all migrations with <code>pipenv run python manage.py migrate</code>.</li>
 <li>Create an admin user with: <code>pipenv run python manage.py createsuperuser   --email some@mail.com --username admin</code> and set a password</li>
 <li>Set up github api key and username with <code>export GITHUB_API_KEY='ultra_secret_key'</code> and <code>export GITHUB_API_USER='awesome_user'</code>. Alternativelly, it is possible to run the application without setting it, but be aware that the rate limit will be reached very quickly</li>
 <li>Run <code>goreman -f Procfile.dev</code>, or equivalent. Alternativelly it the following can be used: <code>pipenv run python manage.py runserver</code> and <code>pipenv run   celery -A git_o_matic_9k  worker --beat --loglevel INFO</code></li>

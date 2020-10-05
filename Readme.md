@@ -347,7 +347,10 @@ of request quota during its execution it is properly signicaled as an error.
   [`postgresql`](https://www.postgresql.org/) are installed. Optionally install
   either [`goreman`](https://github.com/mattn/goreman),
   [`foreman`](https://github.com/theforeman/foreman), or an equivalent.
-5) Create a database for the project with `createdb git_o_matic_9k`
+5) Create a database for the project with `createdb git_o_matic_9k`. To load a
+  prepopulated database, run `pg_restore -h localhost -U postgres
+  --dbname=git_o_matic_9k demo_db.dump`. Otherwise, run all migrations with
+  `pipenv run python manage.py migrate`.
 6) Create an admin user with: `pipenv run python manage.py createsuperuser
   --email some@mail.com --username admin` and set a password
 7) Set up github api key and username with
