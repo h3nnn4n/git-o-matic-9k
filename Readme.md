@@ -181,7 +181,8 @@ returns
             "subscribers_count": 1,
             "watchers_count": 52,
             "open_issues_count": 0
-        },
+        }
+    ]
 }
 ```
 
