@@ -14,7 +14,7 @@ from pathlib import Path
 import os
 
 import django_heroku
-from celery.schedules import crontab
+from celery.schedules import crontab # pylint: disable=unused-import
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -176,12 +176,12 @@ RATE_LIMIT_STOP_THRESHOLD = 25
 
 # Celery scheduled tasks settings
 CELERY_BEAT_SCHEDULE = {
-    'discovery_scraper': {
-        'task': 'github.tasks.discovery_scraper',
-        'schedule': crontab(hour='*'),
-    },
-    'heart_beat_task': {
-        'task': 'github.tasks.heart_beat_task',
-        'schedule': crontab(minute='*/1'),
-    },
+    # 'discovery_scraper': {
+        # 'task': 'github.tasks.discovery_scraper',
+        # 'schedule': crontab(hour='*'),
+    # },
+    # 'heart_beat_task': {
+        # 'task': 'github.tasks.heart_beat_task',
+        # 'schedule': crontab(minute='*/1'),
+    # },
 }
