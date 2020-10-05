@@ -122,8 +122,9 @@
 <span id="cb8-30"><a href="#cb8-30" aria-hidden="true"></a>            <span class="dt">&quot;subscribers_count&quot;</span><span class="fu">:</span> <span class="dv">1</span><span class="fu">,</span></span>
 <span id="cb8-31"><a href="#cb8-31" aria-hidden="true"></a>            <span class="dt">&quot;watchers_count&quot;</span><span class="fu">:</span> <span class="dv">52</span><span class="fu">,</span></span>
 <span id="cb8-32"><a href="#cb8-32" aria-hidden="true"></a>            <span class="dt">&quot;open_issues_count&quot;</span><span class="fu">:</span> <span class="dv">0</span></span>
-<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a>        <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a><span class="er">}</span></span></code></pre></div>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true"></a>        <span class="fu">}</span></span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true"></a>    <span class="ot">]</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true"></a><span class="fu">}</span></span></code></pre></div>
 <p>It is possible to fetch data about a single <code>uuid</code> by passing it to the endpoint. For example:</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true"></a><span class="ex">curl</span> -H <span class="st">&#39;Accept: application/json; indent=4&#39;</span> -u test_user:b@t09pp#m https://secret-gorge-30655.herokuapp.com/github/repositories/d1a4bbb5-e6ad-426a-8303-8f132cb6fcf5/</span></code></pre></div>
 <p>returns</p>
@@ -186,7 +187,7 @@
 <p>On a successfull <code>POST</code> request a response with code 200 and message <code>{'success': 'yes'}</code> will be sent.</p>
 <p>In case of failure, a response with code 406 will be sent with <code>'success': 'no'</code> and an appropriate error message. For example: <code>{'success': 'no', 'error': 'Missing repo_name. Provide a valid repository name'}</code></p>
 <h2 id="periodic-tasks">Periodic tasks</h2>
-<p>Two periodic tasks are scheduled:</p>
+<p>Two periodic tasks are pre-scheduled, but currently disabled:</p>
 <ol type="1">
 <li><p>The <code>discovery_scraper</code>. This runs every hour and fetches new users that are following or being followed by some user already in the database. If the database is empty then nothing happens.</p></li>
 <li><p>The <code>heart_beat_task</code>. It runs every minute and logs a <code>"ping"</code> string. This can be used to detect that celery and the celery scheduler are running.</p></li>

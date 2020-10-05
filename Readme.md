@@ -295,7 +295,7 @@ an appropriate error message. For example:
 
 ## Periodic tasks
 
-Two periodic tasks are scheduled:
+Two periodic tasks are pre-scheduled, but currently disabled:
 
 1) The `discovery_scraper`. This runs every hour and fetches new users that are
 following or being followed by some user already in the database. If the
