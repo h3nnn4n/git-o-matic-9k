@@ -12,6 +12,7 @@ class RepositorySerializer(serializers.HyperlinkedModelSerializer):
         model = Repository
         fields = [
             'id',
+            'url',
             'owner',
             'github_id',
             'owner_github_id',
@@ -49,6 +50,7 @@ class DeveloperSerializer(serializers.HyperlinkedModelSerializer):
         model = Developer
         fields = [
             'id',
+            'url',
             'github_id',
             'login',
             'name',
